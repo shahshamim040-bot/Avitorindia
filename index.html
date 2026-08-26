@@ -1,112 +1,132 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviator India - Login / Register</title>
+    <title>Aviator India - Login</title>
     <style>
-        body { background: #0f172a; color: #fff; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .form-box { background: #1e293b; padding: 25px; border-radius: 10px; width: 350px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background: #0f172a; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .form-box { background: #1e293b; padding: 25px; border-radius: 10px; width: 360px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { text-align: center; margin-bottom: 20px; color: #38bdf8; }
         input, select { width: 100%; padding: 10px; margin: 8px 0; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 5px; }
-        button { width: 100%; padding: 10px; background: #22c55e; border: none; color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #16a34a; }
-        .toggle-link { text-align: center; margin-top: 15px; font-size: 14px; color: #38bdf8; cursor: pointer; }
+        button { width: 100%; padding: 10px; background: #2563eb; border: none; color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        button:hover { opacity: 0.9; }
+        .link-text { text-align: center; margin-top: 15px; font-size: 13px; color: #38bdf8; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="form-box">
-        <h2 id="form-title" style="text-align: center;">Aviator India Reg.</h2>
+        <h2 id="form-title">Aviator India Login</h2>
         
-        <!-- রেজিস্ট্রেশন ফর্ম -->
-        <form id="reg-form" onsubmit="handleRegister(event)">
-            <input type="text" id="reg-name" placeholder="আপনার নাম" required>
-            <input type="email" id="reg-email" placeholder="ইমেইল এড্রেস" required>
-            <input type="text" id="reg-country" placeholder="দেশের নাম (যেমন: India)" required>
+        <!-- Login Form -->
+        <form id="login-form" onsubmit="handleLogin(event)">
+            <input type="email" id="login-email" placeholder="Email Address" required>
+            <input type="password" id="login-pass" placeholder="Password" required>
+            <button type="submit" style="background: #2563eb;">Login</button>
+            <div class="link-text" onclick="switchView('register')">Don't have an account? Register</div>
+            <div class="link-text" onclick="switchView('forgot')" style="color: #facc15; margin-top: 8px;">Forgot Password?</div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="reg-form" style="display: none;" onsubmit="handleRegister(event)">
+            <input type="text" id="reg-name" placeholder="Full Name" required>
+            <input type="email" id="reg-email" placeholder="Email Address" required>
             <div style="display: flex; gap: 5px;">
                 <select id="country-code" style="width: 40%;">
                     <option value="+91">+91 (India)</option>
                     <option value="+880">+880 (BD)</option>
                 </select>
-                <input type="text" id="reg-phone" placeholder="ফোন নাম্বার" style="width: 60%;" required>
+                <input type="text" id="reg-phone" placeholder="Phone Number" style="width: 60%;" required>
             </div>
-            <input type="password" id="reg-pass" placeholder="পাসওয়ার্ড" required>
-            <input type="text" id="reg-ref" placeholder="রেফার কোড (যদি থাকে)">
-            <button type="submit">রেজিস্ট্রেশন করুন</button>
+            <input type="password" id="reg-pass" placeholder="Password" required>
+            <input type="password" id="reg-repass" placeholder="Re-enter Password" required>
+            <input type="text" id="reg-ref" placeholder="Referral Code (Optional)">
+            <button type="submit" style="background: #16a34a;">Register</button>
+            <div class="link-text" onclick="switchView('login')">Already have an account? Login</div>
         </form>
 
-        <!-- লগইন ফর্ম (শুরুতে হাইড থাকবে) -->
-        <form id="login-form" style="display: none;" onsubmit="handleLogin(event)">
-            <input type="email" id="login-email" placeholder="ইমেইল এড্রেস" required>
-            <input type="password" id="login-pass" placeholder="পাসওয়ার্ড" required>
-            <button type="submit" style="background: #2563eb;">লগইন করুন</button>
+        <!-- Forgot Password Form -->
+        <form id="forgot-form" style="display: none;" onsubmit="handleForgot(event)">
+            <input type="email" id="forgot-email" placeholder="Enter your registered Email" required>
+            <button type="submit" style="background: #ca8a04;">Reset Password</button>
+            <div class="link-text" onclick="switchView('login')">Back to Login</div>
         </form>
-
-        <div class="toggle-link" id="toggle-btn" onclick="toggleForm()">ইতিমধ্যে একাউন্ট আছে? লগইন করুন</div>
     </div>
 
     <script>
-        function toggleForm() {
-            let reg = document.getElementById('reg-form');
-            let log = document.getElementById('login-form');
-            let title = document.getElementById('form-title');
-            let btn = document.getElementById('toggle-btn');
+        function switchView(view) {
+            document.getElementById('login-form').style.display = view === 'login' ? 'block' : 'none';
+            document.getElementById('reg-form').style.display = view === 'register' ? 'block' : 'none';
+            document.getElementById('forgot-form').style.display = view === 'forgot' ? 'block' : 'none';
             
-            if(reg.style.display === 'none') {
-                reg.style.display = 'block';
-                log.style.display = 'none';
-                title.innerText = "Aviator India Reg.";
-                btn.innerText = "ইতিমধ্যে একাউন্ট আছে? লগইন করুন";
-            } else {
-                reg.style.display = 'none';
-                log.style.display = 'block';
-                title.innerText = "Aviator India Login";
-                btn.innerText = "নতুন একাউন্ট খুলতে চান? রেজিস্ট্রেশন করুন";
-            }
+            let titles = { login: 'Aviator India Login', register: 'Aviator India Register', forgot: 'Password Recovery' };
+            document.getElementById('form-title').innerText = titles[view];
         }
 
         function handleRegister(e) {
             e.preventDefault();
             let name = document.getElementById('reg-name').value;
             let email = document.getElementById('reg-email').value;
+            let phone = document.getElementById('country-code').value + document.getElementById('reg-phone').value;
             let pass = document.getElementById('reg-pass').value;
-            let refInput = document.getElementById('reg-ref').value;
-            
-            // ইউনিক রেফারেল কোড তৈরি (নাম দিয়ে)
-            let userRefCode = name.toUpperCase().replace(/\s+/g, '') + Math.floor(100 + Math.random() * 900);
-            
+            let repass = document.getElementById('reg-repass').value;
+            let refCode = document.getElementById('reg-ref').value;
+
+            if(pass !== repass) {
+                alert('❌ Passwords do not match!');
+                return;
+            }
+
+            let generatedRef = name.toUpperCase().replace(/\s+/g, '') + Math.floor(100 + Math.random() * 900);
+
             let userData = {
-                name: name,
-                email: email,
-                pass: pass,
-                balance: 0,
-                refCode: userRefCode,
-                referredBy: refInput ? refInput : 'None',
-                verified: false,
-                status: 'Active'
+                name, email, phone, pass, balance: 0, refCode: generatedRef, referredBy: refCode || 'None', status: 'Active'
             };
 
+            // Save user data for Login & Admin panel
             localStorage.setItem(email, JSON.stringify(userData));
-            localStorage.setItem('currentUser', email);
             
-            alert('রেজিস্ট্রেশন সফল হয়েছে! টেলিগ্রাম চ্যানেলে জয়েন করুন।');
-            window.location.href = 'home.html'; // হোম পেজে রিডাইরেক্ট
+            let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+            allUsers.push(userData);
+            localStorage.setItem('allUsers', JSON.stringify(allUsers));
+
+            localStorage.setItem('currentUser', email);
+
+            if(confirm('✅ Registration Successful! Click OK to join our official Telegram Group.')) {
+                window.location.href = 'https://t.me/+bju2uhZlu7c2NmJk';
+            } else {
+                window.location.href = 'home.html';
+            }
         }
 
         function handleLogin(e) {
             e.preventDefault();
             let email = document.getElementById('login-email').value;
             let pass = document.getElementById('login-pass').value;
-            
-            let data = JSON.parse(localStorage.getItem(email));
-            if(data && data.pass === pass) {
-                if(data.status === 'Suspended') {
-                    alert('আপনার একাউন্টটি সাসপেন্ড করা হয়েছে!');
+
+            let user = JSON.parse(localStorage.getItem(email));
+            if(user && user.pass === pass) {
+                if(user.status === 'Suspended') {
+                    alert('❌ Your account is suspended!');
                     return;
                 }
                 localStorage.setItem('currentUser', email);
                 window.location.href = 'home.html';
             } else {
-                alert('ইমেইল অথবা পাসওয়ার্ড ভুল!');
+                alert('❌ Invalid Email or Password!');
+            }
+        }
+
+        function handleForgot(e) {
+            e.preventDefault();
+            let email = document.getElementById('forgot-email').value;
+            let user = JSON.parse(localStorage.getItem(email));
+            if(user) {
+                alert('📩 Password recovery link sent to ' + email);
+                switchView('login');
+            } else {
+                alert('❌ Email not found!');
             }
         }
     </script>
