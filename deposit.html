@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>Deposit - Aviator India</title>
+    <style>
+        body { background: #0f172a; color: #fff; font-family: Arial; padding: 20px; }
+        .box { width: 380px; margin: auto; background: #1e293b; padding: 20px; border-radius: 8px; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 5px; }
+        button { width: 100%; padding: 10px; background: #16a34a; border: none; color: #fff; font-weight: bold; cursor: pointer; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2>টাকা ডিপোজিট করুন</h2>
+    <p style="font-size: 13px;">বিকাশ/নগদ পার্সোনাল নাম্বার: <strong id="admin-num" style="color: #38bdf8;">01700000000</strong></p>
+    
+    <form onsubmit="submitDeposit(event)">
+        <select id="dep-method">
+            <option value="bKash">বিকাশ (bKash)</option>
+            <option value="Nagad">নগদ (Nagad)</option>
+        </select>
+        <input type="number" id="dep-amount" placeholder="টাকার পরিমাণ" required>
+        <input type="text" id="dep-sender" placeholder="যে নাম্বার থেকে টাকা পাঠিয়েছেন" required>
+        <input type="text" id="dep-trx" placeholder="ট্রানজেকশন আইডি (TrxID)" required>
+        <label style="font-size: 13px;">স্ক্রিনশট আপলোড করুন:</label>
+        <input type="file" id="dep-file" required>
+        <button type="submit" style="margin-top: 10px;">ডিপোজিট সাবমিট করুন</button>
+    </form>
+    <p style="text-align: center; margin-top: 15px;"><a href="home.html" style="color: #38bdf8; text-decoration: none;">← হোম পেজে ফিরে যান</a></p>
+</div>
+
+<script>
+    // অ্যাডমিন যদি নাম্বার পরিবর্তন করে থাকে তা লোড করা
+    let savedNum = localStorage.getItem('adminDepositNumber');
+    if(savedNum) document.getElementById('admin-num').innerText = savedNum;
+
+    function submitDeposit(e) {
+        e.preventDefault();
+        let email = localStorage.getItem('currentUser');
+        let amount = document.getElementById('dep-amount').value;
+        let trx = document.getElementById('dep-trx').value;
+        let method = document.getElementById('dep-method').value;
+
+        let depositData = {
+            id: Date.now(),
+            email: email,
+            method: method,
+            amount: amount,
+            trx: trx,
+            status: 'Pending',
+            reason: ''
+        };
+
+        let allDeposits = JSON.parse(localStorage.getItem('allDeposits') || '[]');
+        allDeposits.push(depositData);
+        localStorage.setItem('allDeposits', JSON.stringify(allDeposits));
+
+        alert('ডিপোজিট রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
+        window.location.href = 'history.html';
+    }
+</script>
+</body>
+</html>
