@@ -2,35 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aviator Admin Dashboard</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0c0f15; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        body { background: #0c0f15; color: #fff; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+
+        @media(min-width: 768px) { body { flex-direction: row; height: 100vh; overflow: hidden; } }
 
         /* Sidebar */
-        .sidebar { width: 260px; background: #131823; border-right: 1px solid #1f293d; display: flex; flex-direction: column; padding: 20px; gap: 10px; overflow-y: auto; }
-        .sidebar h2 { color: #e11d48; font-size: 20px; margin-bottom: 15px; font-style: italic; }
-        .sidebar button { background: #1a2233; border: none; color: #cbd5e1; padding: 12px; text-align: left; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
+        .sidebar { width: 100%; background: #131823; border-bottom: 1px solid #1f293d; display: flex; flex-direction: row; overflow-x: auto; padding: 10px; gap: 8px; flex-shrink: 0; }
+        @media(min-width: 768px) { .sidebar { width: 260px; height: 100%; flex-direction: column; border-bottom: none; border-right: 1px solid #1f293d; overflow-y: auto; padding: 20px; gap: 10px; } }
+        
+        .sidebar h2 { color: #e11d48; font-size: 18px; margin-bottom: 5px; font-style: italic; display: none; }
+        @media(min-width: 768px) { .sidebar h2 { display: block; } }
+
+        .sidebar button { background: #1a2233; border: none; color: #cbd5e1; padding: 10px 14px; text-align: center; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; white-space: nowrap; transition: 0.2s; }
+        @media(min-width: 768px) { .sidebar button { text-align: left; font-size: 13px; padding: 12px; } }
         .sidebar button:hover, .sidebar button.active { background: #2563eb; color: #fff; }
 
         /* Main Content */
-        .main-content { flex: 1; padding: 25px; overflow-y: auto; background: #0c0f15; display: flex; flex-direction: column; gap: 20px; }
-        .section-panel { display: none; background: #131823; border: 1px solid #1f293d; border-radius: 12px; padding: 20px; }
-        .section-panel.active { display: block; }
-        .section-panel h3 { color: #38bdf8; margin-bottom: 15px; font-size: 18px; border-bottom: 1px solid #1f293d; padding-bottom: 8px; }
+        .main-content { flex: 1; padding: 15px; overflow-y: auto; background: #0c0f15; display: flex; flex-direction: column; gap: 15px; width: 100%; }
+        @media(min-width: 768px) { .main-content { padding: 25px; } }
 
-        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 6px; }
-        .form-group label { font-size: 13px; color: #cbd5e1; }
+        .section-panel { display: none; background: #131823; border: 1px solid #1f293d; border-radius: 12px; padding: 15px; }
+        @media(min-width: 768px) { .section-panel { padding: 20px; } }
+        .section-panel.active { display: block; }
+        .section-panel h3 { color: #38bdf8; margin-bottom: 12px; font-size: 16px; border-bottom: 1px solid #1f293d; padding-bottom: 6px; }
+
+        .form-group { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 12px; color: #cbd5e1; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #0c0f15; border: 1px solid #2a364f; border-radius: 6px; color: #fff; font-size: 14px; outline: none; }
         
-        .btn { background: #16a34a; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .btn { background: #16a34a; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .btn-danger { background: #ef4444; }
         .btn-warning { background: #ca8a04; }
 
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th, td { padding: 10px; border: 1px solid #1f293d; text-align: left; }
+        /* Tables Responsive Container */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; min-width: 500px; }
+        th, td { padding: 8px; border: 1px solid #1f293d; text-align: left; }
         th { background: #1a2233; color: #38bdf8; }
     </style>
 </head>
@@ -39,13 +50,13 @@
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <h2>Admin Portal</h2>
-        <button class="active" onclick="switchTab('tab-home', this)">🏠 Dashboard Home</button>
-        <button onclick="switchTab('tab-users', this)">👥 Users Management</button>
-        <button onclick="switchTab('tab-prediction', this)">🎯 Prediction & Crashes</button>
-        <button onclick="switchTab('tab-deposit', this)">💰 Deposit Approvals</button>
-        <button onclick="switchTab('tab-withdraw', this)">🏦 Withdraw Approvals</button>
-        <button onclick="switchTab('tab-payment', this)">📱 Payment Methods</button>
-        <button onclick="switchTab('tab-bonus', this)">🎁 Send Bonus</button>
+        <button class="active" onclick="switchTab('tab-home', this)">🏠 Dashboard</button>
+        <button onclick="switchTab('tab-users', this)">👥 Users</button>
+        <button onclick="switchTab('tab-prediction', this)">🎯 Predictions</button>
+        <button onclick="switchTab('tab-deposit', this)">💰 Deposits</button>
+        <button onclick="switchTab('tab-withdraw', this)">🏦 Withdraws</button>
+        <button onclick="switchTab('tab-payment', this)">📱 Payments</button>
+        <button onclick="switchTab('tab-bonus', this)">🎁 Bonus</button>
     </div>
 
     <!-- Main Dashboard Area -->
@@ -60,33 +71,33 @@
             </div>
             <button class="btn" onclick="saveNotice()">Update Notice</button>
 
-            <h3 style="margin-top: 25px;">Recent Crash Predictions Log</h3>
+            <h3 style="margin-top: 20px;">Recent Crash Predictions Log</h3>
             <div id="admin-pred-logs-box">No logs yet.</div>
         </div>
 
         <!-- 2. Users Management -->
         <div id="tab-users" class="section-panel">
-            <h3>All Registered Users & Controls</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Balance</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="users-table-body">
-                    <!-- Dynamic Users -->
-                </tbody>
-            </table>
+            <h3>All Registered Users</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- 3. Prediction & Crashes -->
         <div id="tab-prediction" class="section-panel">
-            <h3>Next Crash Multiplier Control</h3>
+            <h3>Secret Crash Multipliers Control (For Users Secret Link)</h3>
             <div class="form-group">
-                <label>Set Next Crash Multipliers (Comma separated e.g. 2.50, 5.00, 1.80):</label>
+                <label>Set Upcoming Crash Multipliers (Comma separated e.g. 2.50, 5.00, 1.80):</label>
                 <input type="text" id="admin-pred-input" placeholder="2.50, 4.20, 1.50">
             </div>
             <button class="btn" onclick="savePredictions()">Save Predictions</button>
@@ -95,41 +106,39 @@
         <!-- 4. Deposit Approvals -->
         <div id="tab-deposit" class="section-panel">
             <h3>Pending Deposit Requests</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>User Email</th>
-                        <th>Method</th>
-                        <th>Amount</th>
-                        <th>Sender / TrxID</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="deposit-table-body">
-                    <!-- Dynamic Deposits -->
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Amount</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deposit-table-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- 5. Withdraw Approvals -->
         <div id="tab-withdraw" class="section-panel">
             <h3>Pending Withdraw Requests</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>User Email</th>
-                        <th>Method</th>
-                        <th>Amount</th>
-                        <th>Receiver Number</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="withdraw-table-body">
-                    <!-- Dynamic Withdraws -->
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Amount</th>
+                            <th>Receiver</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdraw-table-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- 6. Payment Methods -->
@@ -187,7 +196,7 @@
             let val = document.getElementById('admin-pred-input').value;
             let preds = val.split(',').map(s => s.trim()).filter(s => s);
             localStorage.setItem('admin_predictions', JSON.stringify(preds));
-            alert('Predictions saved successfully!');
+            alert('Predictions saved successfully for user secret link view!');
         }
 
         function renderPredLogs() {
@@ -209,11 +218,9 @@
                 let u = users[email];
                 html += `<tr>
                     <td>${email}</td>
-                    <td>৳<input type="number" id="bal_${email}" value="${u.balance}" style="width:80px; background:#1e293b; border:none; color:#22c55e; padding:4px;"> <button class="btn" style="padding:2px 6px; font-size:11px;" onclick="updateUserBal('${email}')">Save</button></td>
+                    <td>৳<input type="number" id="bal_${email}" value="${u.balance}" style="width:70px; background:#1e293b; border:none; color:#22c55e; padding:4px;"> <button class="btn" style="padding:2px 5px; font-size:10px;" onclick="updateUserBal('${email}')">Save</button></td>
                     <td style="color:${u.status === 'Banned' ? '#ef4444' : '#22c55e'}">${u.status || 'Active'}</td>
-                    <td>
-                        <button class="btn btn-danger" style="padding:4px 8px; font-size:11px;" onclick="toggleBan('${email}')">${u.status === 'Banned' ? 'Unban' : 'Ban'}</button>
-                    </td>
+                    <td><button class="btn btn-danger" style="padding:3px 6px; font-size:10px;" onclick="toggleBan('${email}')">${u.status === 'Banned' ? 'Unban' : 'Ban'}</button></td>
                 </tr>`;
             }
             tbody.innerHTML = html || '<tr><td colspan="4">No users found.</td></tr>';
@@ -225,7 +232,7 @@
             if(users[email]) {
                 users[email].balance = val;
                 localStorage.setItem('admin_users', JSON.stringify(users));
-                alert('User balance updated successfully!');
+                alert('User balance updated!');
             }
         }
 
@@ -245,38 +252,48 @@
             txs.forEach((t, index) => {
                 html += `<tr>
                     <td>${t.email}</td>
-                    <td>${t.method}</td>
                     <td>৳${t.amount}</td>
-                    <td>Sender: ${t.sender}<br>TrxID: ${t.trx}</td>
-                    <td style="color:${t.status === 'Approved' ? '#22c55e' : '#f59e0b'}">${t.status}</td>
+                    <td>Sender: ${t.sender}<br>Trx: ${t.trx}</td>
+                    <td style="color:${t.status === 'Approved' ? '#22c55e' : (t.status === 'Rejected' ? '#ef4444' : '#f59e0b')}">${t.status} ${t.reason ? '<br><small>Reason: '+t.reason+'</small>' : ''}</td>
                     <td>
-                        ${t.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px;" onclick="approveDeposit(${index})">Approve</button>` : 'Done'}
+                        ${t.status === 'Pending' ? `
+                            <button class="btn" style="padding:3px 6px; font-size:10px;" onclick="approveDeposit(${index})">Approve</button>
+                            <button class="btn btn-danger" style="padding:3px 6px; font-size:10px; margin-top:3px;" onclick="rejectDeposit(${index})">Reject</button>
+                        ` : 'Done'}
                     </td>
                 </tr>`;
             });
-            tbody.innerHTML = html || '<tr><td colspan="6">No deposit requests.</td></tr>';
+            tbody.innerHTML = html || '<tr><td colspan="5">No deposit requests.</td></tr>';
         }
 
         function approveDeposit(index) {
             let txs = JSON.parse(localStorage.getItem('admin_deposits') || '[]');
             let t = txs[index];
-            if(t.status === 'Pending') {
-                t.status = 'Approved';
-                localStorage.setItem('admin_deposits', JSON.stringify(txs));
+            t.status = 'Approved';
+            localStorage.setItem('admin_deposits', JSON.stringify(txs));
 
-                // Add balance to user
-                let users = JSON.parse(localStorage.getItem('admin_users') || '{}');
-                if(users[t.email]) {
-                    users[t.email].balance += t.amount;
-                    // Unlock bonus on first deposit
-                    if(!users[t.email].deposited) {
-                        users[t.email].deposited = true;
-                        users[t.email].balance += users[t.email].bonus; // Unlock signup/referral bonus
-                    }
-                    localStorage.setItem('admin_users', JSON.stringify(users));
+            let users = JSON.parse(localStorage.getItem('admin_users') || '{}');
+            if(users[t.email]) {
+                users[t.email].balance += t.amount;
+                if(!users[t.email].deposited) {
+                    users[t.email].deposited = true;
+                    users[t.email].balance += users[t.email].bonus;
                 }
+                localStorage.setItem('admin_users', JSON.stringify(users));
+            }
+            renderDeposits();
+            alert('Deposit Approved!');
+        }
+
+        function rejectDeposit(index) {
+            let reason = prompt("Enter reason for rejecting deposit:");
+            if(reason !== null) {
+                let txs = JSON.parse(localStorage.getItem('admin_deposits') || '[]');
+                txs[index].status = 'Rejected';
+                txs[index].reason = reason;
+                localStorage.setItem('admin_deposits', JSON.stringify(txs));
                 renderDeposits();
-                alert('Deposit approved and balance added successfully!');
+                alert('Deposit Rejected with reason.');
             }
         }
 
@@ -287,16 +304,18 @@
             txs.forEach((t, index) => {
                 html += `<tr>
                     <td>${t.email}</td>
-                    <td>${t.method}</td>
                     <td>৳${t.amount}</td>
                     <td>${t.number}</td>
-                    <td style="color:${t.status === 'Approved' ? '#22c55e' : '#f59e0b'}">${t.status}</td>
+                    <td style="color:${t.status === 'Approved' ? '#22c55e' : (t.status === 'Rejected' ? '#ef4444' : '#f59e0b')}">${t.status} ${t.reason ? '<br><small>Reason: '+t.reason+'</small>' : ''}</td>
                     <td>
-                        ${t.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px;" onclick="approveWithdraw(${index})">Approve</button>` : 'Done'}
+                        ${t.status === 'Pending' ? `
+                            <button class="btn" style="padding:3px 6px; font-size:10px;" onclick="approveWithdraw(${index})">Approve</button>
+                            <button class="btn btn-danger" style="padding:3px 6px; font-size:10px; margin-top:3px;" onclick="rejectWithdraw(${index})">Reject</button>
+                        ` : 'Done'}
                     </td>
                 </tr>`;
             });
-            tbody.innerHTML = html || '<tr><td colspan="6">No withdrawal requests.</td></tr>';
+            tbody.innerHTML = html || '<tr><td colspan="5">No withdrawal requests.</td></tr>';
         }
 
         function approveWithdraw(index) {
@@ -304,7 +323,28 @@
             txs[index].status = 'Approved';
             localStorage.setItem('admin_withdraws', JSON.stringify(txs));
             renderWithdraws();
-            alert('Withdrawal request approved!');
+            alert('Withdrawal Approved!');
+        }
+
+        function rejectWithdraw(index) {
+            let reason = prompt("Enter reason for rejecting withdrawal:");
+            if(reason !== null) {
+                let txs = JSON.parse(localStorage.getItem('admin_withdraws') || '[]');
+                let t = txs[index];
+                t.status = 'Rejected';
+                t.reason = reason;
+                
+                // Refund balance to user
+                let users = JSON.parse(localStorage.getItem('admin_users') || '{}');
+                if(users[t.email]) {
+                    users[t.email].balance += t.amount;
+                    localStorage.setItem('admin_users', JSON.stringify(users));
+                }
+
+                localStorage.setItem('admin_withdraws', JSON.stringify(txs));
+                renderWithdraws();
+                alert('Withdrawal Rejected and balance refunded.');
+            }
         }
 
         function savePaymentNumbers() {
@@ -314,7 +354,7 @@
             settings.bkash = bkash;
             settings.nagad = nagad;
             localStorage.setItem('admin_settings', JSON.stringify(settings));
-            alert('Payment numbers updated successfully!');
+            alert('Payment numbers updated!');
         }
 
         function sendBonusToUser() {
