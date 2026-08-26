@@ -1,122 +1,333 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel - Aviator India</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator Admin Dashboard</title>
     <style>
-        body { background: #0f172a; color: #fff; font-family: Arial; padding: 15px; }
-        .admin-box { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 8px; margin: 6px 0; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 4px; }
-        button { padding: 8px 15px; background: #2563eb; border: none; color: #fff; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0c0f15; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar { width: 260px; background: #131823; border-right: 1px solid #1f293d; display: flex; flex-direction: column; padding: 20px; gap: 10px; overflow-y: auto; }
+        .sidebar h2 { color: #e11d48; font-size: 20px; margin-bottom: 15px; font-style: italic; }
+        .sidebar button { background: #1a2233; border: none; color: #cbd5e1; padding: 12px; text-align: left; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
+        .sidebar button:hover, .sidebar button.active { background: #2563eb; color: #fff; }
+
+        /* Main Content */
+        .main-content { flex: 1; padding: 25px; overflow-y: auto; background: #0c0f15; display: flex; flex-direction: column; gap: 20px; }
+        .section-panel { display: none; background: #131823; border: 1px solid #1f293d; border-radius: 12px; padding: 20px; }
+        .section-panel.active { display: block; }
+        .section-panel h3 { color: #38bdf8; margin-bottom: 15px; font-size: 18px; border-bottom: 1px solid #1f293d; padding-bottom: 8px; }
+
+        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 13px; color: #cbd5e1; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #0c0f15; border: 1px solid #2a364f; border-radius: 6px; color: #fff; font-size: 14px; outline: none; }
+        
+        .btn { background: #16a34a; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .btn-danger { background: #ef4444; }
+        .btn-warning { background: #ca8a04; }
+
+        /* Tables */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th, td { border: 1px solid #334155; padding: 8px; text-align: center; }
-        th { background: #334155; }
-        .btn-app { background: #16a34a; padding: 4px 8px; color: #fff; border: none; cursor: pointer; }
-        .btn-rej { background: #dc2626; padding: 4px 8px; color: #fff; border: none; cursor: pointer; }
+        th, td { padding: 10px; border: 1px solid #1f293d; text-align: left; }
+        th { background: #1a2233; color: #38bdf8; }
     </style>
 </head>
 <body>
-    <h1>👑 Aviator India Admin Panel</h1>
 
-    <!-- নোটিশ বোর্ড আপডেট -->
-    <div class="admin-box">
-        <h3>১. নোটিশ বোর্ড আপডেট</h3>
-        <textarea id="notice-input" rows="2" placeholder="নতুন নোটিশ লিখুন..."></textarea>
-        <button onclick="updateNotice()">নোটিশ পাবলিশ করুন</button>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <h2>Admin Portal</h2>
+        <button class="active" onclick="switchTab('tab-home', this)">🏠 Dashboard Home</button>
+        <button onclick="switchTab('tab-users', this)">👥 Users Management</button>
+        <button onclick="switchTab('tab-prediction', this)">🎯 Prediction & Crashes</button>
+        <button onclick="switchTab('tab-deposit', this)">💰 Deposit Approvals</button>
+        <button onclick="switchTab('tab-withdraw', this)">🏦 Withdraw Approvals</button>
+        <button onclick="switchTab('tab-payment', this)">📱 Payment Methods</button>
+        <button onclick="switchTab('tab-bonus', this)">🎁 Send Bonus</button>
     </div>
 
-    <!-- ডিপোজিট নাম্বার পরিবর্তন -->
-    <div class="admin-box">
-        <h3>২. ডিপোজিট নাম্বার পরিবর্তন</h3>
-        <input type="text" id="num-input" placeholder="নতুন বিকাশ/নগদ নাম্বার দিন">
-        <button onclick="updateNumber()">নাম্বার পরিবর্তন করুন</button>
-    </div>
+    <!-- Main Dashboard Area -->
+    <div class="main-content">
 
-    <!-- গেম প্রেডিকশন কন্ট্রোল -->
-    <div class="admin-box">
-        <h3>৩. গেম প্রেডিকশন সেট করুন (১০০% সঠিক)</h3>
-        <input type="text" id="pred-email" placeholder="ইউজারের ইমেইল দিন">
-        <input type="text" id="pred-mult" placeholder="বিমান কত এমাউন্টে উড়বে বা ক্র্যাশ করবে (যেমন: 5.50)">
-        <button onclick="setPrediction()" style="background: #ca8a04;">প্রেডিকশন সেট করুন</button>
-    </div>
+        <!-- 1. Dashboard Home -->
+        <div id="tab-home" class="section-panel active">
+            <h3>Dashboard Overview & Notice Board</h3>
+            <div class="form-group">
+                <label>Change Website Notice Ticker:</label>
+                <input type="text" id="admin-notice-input" placeholder="Enter site notice">
+            </div>
+            <button class="btn" onclick="saveNotice()">Update Notice</button>
 
-    <!-- ডিপোজিট রিকোয়েস্ট ম্যানেজমেন্ট -->
-    <div class="admin-box">
-        <h3>৪. ডিপোজিট রিকোয়েস্ট লিস্ট</h3>
-        <table>
-            <tr>
-                <th>ইমেইল</th>
-                <th>টাকা</th>
-                <th>ট্রানজেকশন আইডি</th>
-                <th>স্ট্যাটাস</th>
-                <th>অ্যাকশন</th>
-            </tr>
-            <tbody id="deposit-table-body"></tbody>
-        </table>
+            <h3 style="margin-top: 25px;">Recent Crash Predictions Log</h3>
+            <div id="admin-pred-logs-box">No logs yet.</div>
+        </div>
+
+        <!-- 2. Users Management -->
+        <div id="tab-users" class="section-panel">
+            <h3>All Registered Users & Controls</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                    <!-- Dynamic Users -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. Prediction & Crashes -->
+        <div id="tab-prediction" class="section-panel">
+            <h3>Next Crash Multiplier Control</h3>
+            <div class="form-group">
+                <label>Set Next Crash Multipliers (Comma separated e.g. 2.50, 5.00, 1.80):</label>
+                <input type="text" id="admin-pred-input" placeholder="2.50, 4.20, 1.50">
+            </div>
+            <button class="btn" onclick="savePredictions()">Save Predictions</button>
+        </div>
+
+        <!-- 4. Deposit Approvals -->
+        <div id="tab-deposit" class="section-panel">
+            <h3>Pending Deposit Requests</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Email</th>
+                        <th>Method</th>
+                        <th>Amount</th>
+                        <th>Sender / TrxID</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="deposit-table-body">
+                    <!-- Dynamic Deposits -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 5. Withdraw Approvals -->
+        <div id="tab-withdraw" class="section-panel">
+            <h3>Pending Withdraw Requests</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Email</th>
+                        <th>Method</th>
+                        <th>Amount</th>
+                        <th>Receiver Number</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="withdraw-table-body">
+                    <!-- Dynamic Withdraws -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 6. Payment Methods -->
+        <div id="tab-payment" class="section-panel">
+            <h3>Update bKash / Nagad Numbers</h3>
+            <div class="form-group">
+                <label>bKash Personal Agent Number:</label>
+                <input type="text" id="pay-bkash" value="01711223344">
+            </div>
+            <div class="form-group">
+                <label>Nagad Personal Agent Number:</label>
+                <input type="text" id="pay-nagad" value="01888997766">
+            </div>
+            <button class="btn" onclick="savePaymentNumbers()">Update Numbers</button>
+        </div>
+
+        <!-- 7. Send Bonus -->
+        <div id="tab-bonus" class="section-panel">
+            <h3>Send Bonus to User</h3>
+            <div class="form-group">
+                <label>User Email:</label>
+                <input type="text" id="bonus-email" placeholder="user@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>Bonus Amount (BDT):</label>
+                <input type="number" id="bonus-amount" placeholder="100">
+            </div>
+            <button class="btn" onclick="sendBonusToUser()">Send Bonus Now</button>
+        </div>
+
     </div>
 
     <script>
-        function updateNotice() {
-            let text = document.getElementById('notice-input').value;
-            localStorage.setItem('adminNotice', text);
-            alert('নোটিশ সফলভাবে আপডেট হয়েছে!');
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+
+            if(tabId === 'tab-users') renderUsers();
+            if(tabId === 'tab-deposit') renderDeposits();
+            if(tabId === 'tab-withdraw') renderWithdraws();
+            if(tabId === 'tab-home') renderPredLogs();
         }
 
-        function updateNumber() {
-            let num = document.getElementById('num-input').value;
-            localStorage.setItem('adminDepositNumber', num);
-            alert('ডিপোজিট নাম্বার পরিবর্তন করা হয়েছে!');
+        function saveNotice() {
+            let notice = document.getElementById('admin-notice-input').value;
+            let settings = JSON.parse(localStorage.getItem('admin_settings') || '{}');
+            settings.notice = notice;
+            localStorage.setItem('admin_settings', JSON.stringify(settings));
+            alert('Notice updated successfully!');
         }
 
-        function setPrediction() {
-            let email = document.getElementById('pred-email').value;
-            let mult = document.getElementById('pred-mult').value;
-            localStorage.setItem('nextCrash_' + email, mult);
-            alert('এই ইউজারের জন্য প্রেডিকশন সফলভাবে সেট করা হয়েছে!');
+        function savePredictions() {
+            let val = document.getElementById('admin-pred-input').value;
+            let preds = val.split(',').map(s => s.trim()).filter(s => s);
+            localStorage.setItem('admin_predictions', JSON.stringify(preds));
+            alert('Predictions saved successfully!');
         }
 
-        // ডিপোজিট টেবিল লোড করা ও অ্যাপ্রুভ/রিজেক্ট করা
-        let deposits = JSON.parse(localStorage.getItem('allDeposits') || '[]');
-        let tbody = document.getElementById('deposit-table-body');
-        let html = "";
-        
-        deposits.forEach((d, index) => {
-            html += `<tr>
-                <td>${d.email}</td>
-                <td>৳${d.amount}</td>
-                <td>${d.trx}</td>
-                <td><b>${d.status}</b></td>
-                <td>
-                    <button class="btn-app" onclick="approveDep(${index})">Approve</button>
-                    <button class="btn-rej" onclick="rejectDep(${index})">Reject</button>
-                </td>
-            </tr>`;
-        });
-        tbody.innerHTML = html || '<tr><td colspan="5">কোনো রিকোয়েস্ট নেই</td></tr>';
-
-        function approveDep(index) {
-            let deposits = JSON.parse(localStorage.getItem('allDeposits'));
-            let d = deposits[index];
-            
-            // ইউজারের একাউন্টে অটো টাকা যোগ করা
-            let userData = JSON.parse(localStorage.getItem(d.email));
-            userData.balance = parseFloat(userData.balance) + parseFloat(d.amount);
-            localStorage.setItem(d.email, JSON.stringify(userData));
-
-            d.status = 'Success';
-            localStorage.setItem('allDeposits', JSON.stringify(deposits));
-            alert('ডিপোজিট অ্যাপ্রুভ করা হয়েছে এবং ইউজারের ব্যালেন্সে টাকা যোগ হয়েছে!');
-            location.reload();
+        function renderPredLogs() {
+            let logs = JSON.parse(localStorage.getItem('admin_pred_logs') || '[]');
+            let box = document.getElementById('admin-pred-logs-box');
+            let html = "<table><tr><th>Time</th><th>Crash Multiplier</th></tr>";
+            logs.forEach(l => {
+                html += `<tr><td>${l.time}</td><td style="color:#ef4444; font-weight:bold;">${l.crash}</td></tr>`;
+            });
+            html += "</table>";
+            box.innerHTML = logs.length ? html : 'No logs yet.';
         }
 
-        function rejectDep(index) {
-            let reason = prompt("রিজেক্ট করার কারণ লিখুন:");
-            let deposits = JSON.parse(localStorage.getItem('allDeposits'));
-            deposits[index].status = 'Rejected';
-            deposits[index].reason = reason;
-            localStorage.setItem('allDeposits', JSON.stringify(deposits));
-            alert('ডিপোজিট রিজেক্ট করা হয়েছে!');
-            location.reload();
+        function renderUsers() {
+            let users = JSON.parse(localStorage.getItem('admin_users') || '{}');
+            let tbody = document.getElementById('users-table-body');
+            let html = "";
+            for(let email in users) {
+                let u = users[email];
+                html += `<tr>
+                    <td>${email}</td>
+                    <td>৳<input type="number" id="bal_${email}" value="${u.balance}" style="width:80px; background:#1e293b; border:none; color:#22c55e; padding:4px;"> <button class="btn" style="padding:2px 6px; font-size:11px;" onclick="updateUserBal('${email}')">Save</button></td>
+                    <td style="color:${u.status === 'Banned' ? '#ef4444' : '#22c55e'}">${u.status || 'Active'}</td>
+                    <td>
+                        <button class="btn btn-danger" style="padding:4px 8px; font-size:11px;" onclick="toggleBan('${email}')">${u.status === 'Banned' ? 'Unban' : 'Ban'}</button>
+                    </td>
+                </tr>`;
+            }
+            tbody.innerHTML = html || '<tr><td colspan="4">No users found.</td></tr>';
+        }
+
+        function updateUserBal(email) {
+            let val = parseFloat(document.getElementById(`bal_${email}`).value);
+            let users = JSON.parse(localStorage.getItem('admin_users') || '{}');
+            if(users[email]) {
+                users[email].balance = val;
+                localStorage.setItem('admin_users', JSON.stringify(users));
+                alert('User balance updated successfully!');
+            }
+        }
+
+        function toggleBan(email) {
+            let users = JSON.parse(localStorage.getItem('admin_users') || '{}');
+            if(users[email]) {
+                users[email].status = users[email].status === 'Banned' ? 'Active' : 'Banned';
+                localStorage.setItem('admin_users', JSON.stringify(users));
+                renderUsers();
+            }
+        }
+
+        function renderDeposits() {
+            let txs = JSON.parse(localStorage.getItem('admin_deposits') || '[]');
+            let tbody = document.getElementById('deposit-table-body');
+            let html = "";
+            txs.forEach((t, index) => {
+                html += `<tr>
+                    <td>${t.email}</td>
+                    <td>${t.method}</td>
+                    <td>৳${t.amount}</td>
+                    <td>Sender: ${t.sender}<br>TrxID: ${t.trx}</td>
+                    <td style="color:${t.status === 'Approved' ? '#22c55e' : '#f59e0b'}">${t.status}</td>
+                    <td>
+                        ${t.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px;" onclick="approveDeposit(${index})">Approve</button>` : 'Done'}
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html || '<tr><td colspan="6">No deposit requests.</td></tr>';
+        }
+
+        function approveDeposit(index) {
+            let txs = JSON.parse(localStorage.getItem('admin_deposits') || '[]');
+            let t = txs[index];
+            if(t.status === 'Pending') {
+                t.status = 'Approved';
+                localStorage.setItem('admin_deposits', JSON.stringify(txs));
+
+                // Add balance to user
+                let users = JSON.parse(localStorage.getItem('admin_users') || '{}');
+                if(users[t.email]) {
+                    users[t.email].balance += t.amount;
+                    // Unlock bonus on first deposit
+                    if(!users[t.email].deposited) {
+                        users[t.email].deposited = true;
+                        users[t.email].balance += users[t.email].bonus; // Unlock signup/referral bonus
+                    }
+                    localStorage.setItem('admin_users', JSON.stringify(users));
+                }
+                renderDeposits();
+                alert('Deposit approved and balance added successfully!');
+            }
+        }
+
+        function renderWithdraws() {
+            let txs = JSON.parse(localStorage.getItem('admin_withdraws') || '[]');
+            let tbody = document.getElementById('withdraw-table-body');
+            let html = "";
+            txs.forEach((t, index) => {
+                html += `<tr>
+                    <td>${t.email}</td>
+                    <td>${t.method}</td>
+                    <td>৳${t.amount}</td>
+                    <td>${t.number}</td>
+                    <td style="color:${t.status === 'Approved' ? '#22c55e' : '#f59e0b'}">${t.status}</td>
+                    <td>
+                        ${t.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px;" onclick="approveWithdraw(${index})">Approve</button>` : 'Done'}
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html || '<tr><td colspan="6">No withdrawal requests.</td></tr>';
+        }
+
+        function approveWithdraw(index) {
+            let txs = JSON.parse(localStorage.getItem('admin_withdraws') || '[]');
+            txs[index].status = 'Approved';
+            localStorage.setItem('admin_withdraws', JSON.stringify(txs));
+            renderWithdraws();
+            alert('Withdrawal request approved!');
+        }
+
+        function savePaymentNumbers() {
+            let bkash = document.getElementById('pay-bkash').value;
+            let nagad = document.getElementById('pay-nagad').value;
+            let settings = JSON.parse(localStorage.getItem('admin_settings') || '{}');
+            settings.bkash = bkash;
+            settings.nagad = nagad;
+            localStorage.setItem('admin_settings', JSON.stringify(settings));
+            alert('Payment numbers updated successfully!');
+        }
+
+        function sendBonusToUser() {
+            let email = document.getElementById('bonus-email').value;
+            let amt = parseFloat(document.getElementById('bonus-amount').value);
+            let users = JSON.parse(localStorage.getItem('admin_users') || '{}');
+            if(users[email] && amt) {
+                users[email].balance += amt;
+                localStorage.setItem('admin_users', JSON.stringify(users));
+                alert(`Successfully sent ৳${amt} bonus to ${email}!`);
+            } else {
+                alert('User not found or invalid amount!');
+            }
         }
     </script>
 </body>
