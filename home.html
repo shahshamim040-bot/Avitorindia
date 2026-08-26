@@ -3,81 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviator - Original Game Interface</title>
+    <title>Aviator - Original Interface</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0e1118; color: #fff; overflow-x: hidden; }
+        body { background: #0c0f15; color: #fff; overflow-x: hidden; }
 
-        /* Top Bar */
-        .top-bar { background: #181d28; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 2px solid #262c3a; }
-        .logo { font-size: 20px; font-weight: bold; color: #ef4444; font-style: italic; display: flex; align-items: center; gap: 5px; }
-        .user-panel { display: flex; align-items: center; gap: 15px; }
-        .balance-box { background: #11141d; padding: 5px 12px; border-radius: 20px; border: 1px solid #334155; font-size: 14px; color: #22c55e; font-weight: bold; }
-        .menu-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
+        /* Top Header Bar */
+        .top-bar { background: #131823; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 2px solid #1f293d; }
+        .logo { font-size: 20px; font-weight: bold; color: #e11d48; font-style: italic; }
+        .user-panel { display: flex; align-items: center; gap: 12px; }
+        .balance-box { background: #0c0f15; padding: 5px 12px; border-radius: 20px; border: 1px solid #1e293b; font-size: 14px; color: #22c55e; font-weight: bold; }
+        .menu-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
 
-        /* Notice Board */
-        .notice-bar { background: #dc2626; color: #fff; padding: 6px; text-align: center; font-size: 13px; font-weight: bold; }
-
-        /* Multiplier History Bar on Top */
-        .history-strip { background: #131722; padding: 8px 10px; display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid #222a38; }
-        .mult-pill { background: #1e2637; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: #a855f7; border: 1px solid #3b82f6; white-space: nowrap; }
+        /* Multiplier Top History Strip */
+        .history-strip { background: #0c0f15; padding: 6px 10px; display: flex; gap: 6px; overflow-x: auto; border-bottom: 1px solid #1a2233; }
+        .mult-pill { background: #161e2e; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; color: #a855f7; border: 1px solid #2a364f; white-space: nowrap; }
+        .mult-pill.high { color: #22c55e; }
 
         /* Side Menu Drawer */
-        .drawer { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #181d28; z-index: 1000; box-shadow: -5px 0 15px rgba(0,0,0,0.7); transition: 0.3s ease; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .drawer { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #131823; z-index: 1000; box-shadow: -5px 0 15px rgba(0,0,0,0.8); transition: 0.3s ease; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .drawer.open { right: 0; }
-        .drawer h3 { color: #38bdf8; border-bottom: 1px solid #2d3748; padding-bottom: 10px; }
-        .drawer a { color: #fff; text-decoration: none; padding: 10px; background: #222b3c; border-radius: 5px; font-size: 14px; display: block; transition: 0.2s; }
+        .drawer h3 { color: #38bdf8; border-bottom: 1px solid #1f293d; padding-bottom: 10px; }
+        .drawer a { color: #fff; text-decoration: none; padding: 10px; background: #1a2233; border-radius: 5px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
         .drawer a:hover { background: #2563eb; }
         .close-drawer { align-self: flex-end; background: #ef4444; border: none; color: #fff; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
 
-        /* Game Arena */
-        .game-container { max-width: 600px; margin: 10px auto; padding: 10px; }
-        .plane-screen { width: 100%; height: 260px; background: radial-gradient(circle, #2a0845 0%, #0e1118 100%); border-radius: 10px; position: relative; display: flex; justify-content: center; align-items: center; border: 2px solid #222b3c; overflow: hidden; }
-        .plane-icon { font-size: 50px; position: absolute; transition: 0.1s linear; display: none; }
-        #multiplier-display { font-size: 45px; font-weight: bold; color: #fff; z-index: 2; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+        /* Game Arena Screen */
+        .game-container { max-width: 480px; margin: 10px auto; padding: 5px; }
+        .plane-screen { width: 100vh; height: 240px; background: radial-gradient(circle, #2e0824 0%, #0c0f15 100%); border-radius: 8px; position: relative; display: flex; justify-content: center; align-items: center; border: 2px solid #1a2233; overflow: hidden; width: 100%; }
+        
+        /* Red Curve Graph Fill */
+        .graph-curve { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(225, 29, 72, 0.3), transparent); clip-path: polygon(0 100%, 0 80%, 30% 70%, 60% 40%, 100% 10%); display: none; }
+        
+        /* Original Red Plane Vector Style */
+        .plane-container { position: absolute; bottom: 20px; left: 20px; display: none; transition: 0.1s linear; }
+        .plane-svg { width: 65px; height: 35px; fill: #e11d48; filter: drop-shadow(0 0 5px #e11d48); }
 
-        /* Betting Controls (Dual Panel like Original) */
-        .bet-section { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .bet-card { background: #181d28; border: 1px solid #262c3a; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        #multiplier-display { font-size: 42px; font-weight: bold; color: #fff; z-index: 2; text-shadow: 0 0 10px rgba(0,0,0,0.9); }
+
+        /* Dual Betting Panels */
+        .bet-section { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+        .bet-card { background: #131823; border: 1px solid #1f293d; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
         .bet-row { display: flex; justify-content: space-between; align-items: center; }
-        .amount-input-group { display: flex; align-items: center; background: #0e1118; border: 1px solid #334155; border-radius: 6px; overflow: hidden; width: 45%; }
-        .amount-input-group button { background: #222b3c; color: #fff; border: none; padding: 8px 12px; cursor: pointer; font-weight: bold; }
-        .amount-input-group input { width: 100%; background: transparent; border: none; color: #fff; text-align: center; font-weight: bold; font-size: 16px; outline: none; }
         
-        .preset-btns { display: flex; gap: 5px; width: 50%; }
-        .preset-btns button { flex: 1; background: #222b3c; border: none; color: #cbd5e1; padding: 6px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+        .amount-input-group { display: flex; align-items: center; background: #0c0f15; border: 1px solid #2a364f; border-radius: 6px; overflow: hidden; width: 45%; }
+        .amount-input-group button { background: #1a2233; color: #fff; border: none; padding: 6px 10px; cursor: pointer; font-weight: bold; }
+        .amount-input-group input { width: 100%; background: transparent; border: none; color: #fff; text-align: center; font-weight: bold; font-size: 15px; outline: none; }
         
-        .action-bet-btn { width: 100%; padding: 14px; background: #16a34a; color: #fff; font-size: 18px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .preset-btns { display: flex; gap: 4px; width: 52%; }
+        .preset-btns button { flex: 1; background: #1a2233; border: none; color: #cbd5e1; padding: 5px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+        
+        .action-bet-btn { width: 100%; padding: 12px; background: #16a34a; color: #fff; font-size: 16px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
         .action-bet-btn.cashout { background: #ca8a04; }
-        .action-bet-btn:disabled { background: #475569; cursor: not-allowed; }
 
-        /* History Table Section */
-        .history-box { max-width: 600px; margin: 15px auto; background: #181d28; padding: 12px; border-radius: 10px; }
-        .history-box h4 { margin-bottom: 8px; color: #38bdf8; font-size: 14px; }
-        .hist-item { background: #0e1118; padding: 8px 12px; margin-bottom: 6px; border-radius: 5px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #3b82f6; }
+        /* History Section */
+        .history-box { max-width: 480px; margin: 10px auto; background: #131823; padding: 10px; border-radius: 8px; }
+        .history-box h4 { margin-bottom: 6px; color: #38bdf8; font-size: 13px; }
+        .hist-item { background: #0c0f15; padding: 6px 10px; margin-bottom: 5px; border-radius: 4px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #3b82f6; }
     </style>
 </head>
 <body>
 
-    <!-- Notice Bar -->
-    <div class="notice-bar" id="notice-text">📢 Notice: Welcome to Aviator India! Place your bets now.</div>
-
     <!-- Top Header Bar -->
     <div class="top-bar">
-        <div class="logo">✈️ Aviator</div>
+        <div class="logo">Aviator</div>
         <div class="user-panel">
-            <div class="balance-box">Balance: ৳<span id="user-balance">0</span></div>
+            <div class="balance-box">💰 <span id="user-balance">0</span> BDT</div>
             <button class="menu-btn" onclick="toggleMenu()">☰</button>
         </div>
     </div>
 
-    <!-- Multiplier Past History Strip -->
+    <!-- Multiplier Top Strip -->
     <div class="history-strip" id="history-strip">
-        <div class="mult-pill">1.45x</div>
-        <div class="mult-pill" style="color: #22c55e;">3.20x</div>
-        <div class="mult-pill">1.12x</div>
-        <div class="mult-pill" style="color: #ef4444;">1.02x</div>
-        <div class="mult-pill">5.80x</div>
+        <div class="mult-pill">1.20x</div>
+        <div class="mult-pill high">2.80x</div>
+        <div class="mult-pill">1.05x</div>
+        <div class="mult-pill high">4.74x</div>
     </div>
 
     <!-- Side Menu Drawer -->
@@ -91,21 +92,27 @@
         <a href="index.html" style="color: #ef4444;">🚪 Logout</a>
     </div>
 
-    <!-- Game Container -->
+    <!-- Game Arena -->
     <div class="game-container">
         <div class="plane-screen">
-            <div id="plane" class="plane-icon">✈️</div>
+            <div class="graph-curve" id="graph-curve"></div>
+            <!-- Original Red Plane SVG Animation -->
+            <div id="plane-container" class="plane-container">
+                <svg class="plane-svg" viewBox="0 0 512 512">
+                    <path d="M501.6 235.5l-133-68.5-115.8-93.5c-8.9-7.2-21-9.2-31.7-5.2-13.8 5.2-22.9 18.6-22.9 33.6v64.9L64 213.3c-17.5 7.1-29 24.3-29 43.4s11.5 36.3 29 43.4l134.2 54.4v64.9c0 15 9.1 28.4 22.9 33.6 10.7 4 22.8 2 31.7-5.2l115.8-93.5 133-68.5c15.8-8.1 26-24.3 26-42.2s-10.2-34.1-26-42.2z"/>
+                </svg>
+            </div>
             <div id="multiplier-display">1.00x</div>
         </div>
 
-        <!-- Dual Bet Panel -->
+        <!-- Dual Bet Panel (Bet 1 & Bet 2) -->
         <div class="bet-section">
-            <!-- Bet Box 1 -->
+            <!-- Panel 1 -->
             <div class="bet-card">
                 <div class="bet-row">
                     <div class="amount-input-group">
                         <button onclick="changeAmt('bet1', -10)">-</button>
-                        <input type="number" id="bet1-amount" value="10">
+                        <input type="number" id="bet1-amount" value="50">
                         <button onclick="changeAmt('bet1', 10)">+</button>
                     </div>
                     <div class="preset-btns">
@@ -114,21 +121,37 @@
                         <button onclick="setAmt('bet1', 500)">500</button>
                     </div>
                 </div>
-                <button id="bet1-btn" class="action-bet-btn" onclick="toggleBet(1)">BET ৳10</button>
+                <button id="bet1-btn" class="action-bet-btn" onclick="toggleBet(1)">BET ৳50</button>
+            </div>
+
+            <!-- Panel 2 -->
+            <div class="bet-card">
+                <div class="bet-row">
+                    <div class="amount-input-group">
+                        <button onclick="changeAmt('bet2', -10)">-</button>
+                        <input type="number" id="bet2-amount" value="50">
+                        <button onclick="changeAmt('bet2', 10)">+</button>
+                    </div>
+                    <div class="preset-btns">
+                        <button onclick="setAmt('bet2', 50)">50</button>
+                        <button onclick="setAmt('bet2', 100)">100</button>
+                        <button onclick="setAmt('bet2', 500)">500</button>
+                    </div>
+                </div>
+                <button id="bet2-btn" class="action-bet-btn" onclick="toggleBet(2)">BET ৳50</button>
             </div>
         </div>
     </div>
 
-    <!-- User Bet History Section -->
+    <!-- History Section -->
     <div class="history-box">
         <h4>Recent Bet Activities</h4>
         <div id="user-act-history">No bets placed yet.</div>
     </div>
 
     <script>
-        // Load User Data
         let currEmail = localStorage.getItem('currentUser');
-        let userData = JSON.parse(localStorage.getItem(currEmail)) || { balance: 1000 };
+        let userData = JSON.parse(localStorage.getItem(currEmail)) || { balance: 0 };
         document.getElementById('user-balance').innerText = userData.balance;
 
         function updateBalanceUI() {
@@ -136,63 +159,79 @@
             localStorage.setItem(currEmail, JSON.stringify(userData));
         }
 
-        // Menu Toggle
         function toggleMenu() {
             document.getElementById('side-drawer').classList.toggle('open');
         }
 
-        // Notice Load
-        let adminNotice = localStorage.getItem('adminNotice');
-        if(adminNotice) document.getElementById('notice-text').innerText = "📢 Notice: " + adminNotice;
-
-        // Amount Adjuster
-        function changeAmt(id, val) {
-            let input = document.getElementById('bet1-amount');
+        function changeAmt(idPrefix, val) {
+            let input = document.getElementById(idPrefix + '-amount');
             let current = parseInt(input.value) || 0;
             let res = current + val;
             if(res >= 10) input.value = res;
         }
-        function setAmt(id, val) {
-            document.getElementById('bet1-amount').value = val;
+        function setAmt(idPrefix, val) {
+            document.getElementById(idPrefix + '-amount').value = val;
         }
 
-        // Game Logic & Betting Engine
-        let gameState = 'waiting'; // waiting, flying, crashed
+        // Game Engine
+        let gameState = 'waiting';
         let mult = 1.00;
-        let isBetPlaced = false;
-        let activeBetAmount = 0;
+        let bets = {
+            1: { placed: false, amount: 0 },
+            2: { placed: false, amount: 0 }
+        };
         let flightTimer = null;
+        let pastMults = ["1.20x", "2.80x", "1.05x", "4.74x", "1.96x"];
+
+        function updateStrip() {
+            let strip = document.getElementById('history-strip');
+            let html = "";
+            pastMults.slice(-10).reverse().forEach(m => {
+                let isHigh = parseFloat(m) > 2;
+                html += `<div class="mult-pill ${isHigh ? 'high' : ''}">${m}</div>`;
+            });
+            strip.innerHTML = html;
+        }
 
         function startGameCycle() {
             gameState = 'waiting';
             mult = 1.00;
             let disp = document.getElementById('multiplier-display');
-            let plane = document.getElementById('plane');
-            let btn = document.getElementById('bet1-btn');
+            let plane = document.getElementById('plane-container');
+            let curve = document.getElementById('graph-curve');
             
             disp.style.color = "#38bdf8";
-            disp.innerText = "Taking off in 3s...";
+            disp.innerText = "Taking off...";
             plane.style.display = "none";
+            curve.style.display = "none";
+            plane.style.transform = "translate(0px, 0px)";
 
             setTimeout(() => {
                 gameState = 'flying';
                 plane.style.display = "block";
+                curve.style.display = "block";
                 
-                // Check Admin Custom Prediction or Random Crash
-                let customCrash = localStorage.getItem('nextCrash_' + currEmail);
-                let crashPoint = customCrash ? parseFloat(customCrash) : (Math.random() * 4 + 1.2).toFixed(2);
-                if(customCrash) localStorage.removeItem('nextCrash_' + currEmail);
+                let crashPoint = (Math.random() * 5 + 1.2).toFixed(2);
+                let xPos = 10, yPos = 10;
 
                 flightTimer = setInterval(() => {
                     mult += 0.03;
                     disp.innerText = mult.toFixed(2) + "x";
 
-                    // If user placed bet and wants to cashout
-                    if(isBetPlaced && btn.classList.contains('cashout')) {
-                        // Live button text update with winning amount
-                        let winVal = (activeBetAmount * mult).toFixed(2);
-                        btn.innerText = `CASHOUT ৳${winVal}`;
+                    xPos += 2.5;
+                    yPos += 1.2;
+                    if(xPos < 280) {
+                        plane.style.transform = `translate(${xPos}px, -${yPos}px)`;
                     }
+
+                    // Update Cashout text live
+                    [1, 2].forEach(id => {
+                        if(bets[id].placed) {
+                            let btn = document.getElementById(`bet${id}-btn`);
+                            let winVal = (bets[id].amount * mult).toFixed(2);
+                            btn.innerText = `CASHOUT ৳${winVal}`;
+                        }
+                    });
 
                     if(mult >= crashPoint) {
                         clearInterval(flightTimer);
@@ -200,59 +239,65 @@
                         disp.style.color = "#ef4444";
                         disp.innerText = `CRASHED (${crashPoint}x)`;
                         plane.style.display = "none";
+                        curve.style.display = "none";
 
-                        // If user didn't cashout before crash -> Loss
-                        if(isBetPlaced) {
-                            isBetPlaced = false;
-                            btn.className = "action-bet-btn";
-                            btn.innerText = `BET ৳${activeBetAmount}`;
-                            btn.disabled = false;
-                            saveActivity('Loss', activeBetAmount, 0, crashPoint);
-                        }
+                        pastMults.push(crashPoint + "x");
+                        updateStrip();
+
+                        // Handle losses for un-cashed bets
+                        [1, 2].forEach(id => {
+                            if(bets[id].placed) {
+                                bets[id].placed = false;
+                                let btn = document.getElementById(`bet${id}-btn`);
+                                let amt = document.getElementById(`bet${id}-amount`).value;
+                                btn.className = "action-bet-btn";
+                                btn.innerText = `BET ৳${amt}`;
+                                saveActivity('Loss', bets[id].amount, 0, crashPoint);
+                            }
+                        });
 
                         setTimeout(startGameCycle, 4000);
                     }
-                }, 150);
+                }, 180);
             }, 3000);
         }
 
-        function toggleBet(boxId) {
-            let btn = document.getElementById('bet1-btn');
-            let amtInput = document.getElementById('bet1-amount');
+        function toggleBet(id) {
+            let btn = document.getElementById(`bet${id}-btn`);
+            let amtInput = document.getElementById(`bet${id}-amount`);
             let amt = parseFloat(amtInput.value);
 
+            if(userData.balance < amt && !bets[id].placed) {
+                alert('⚠️ Insufficient balance! Redirecting to Deposit.');
+                window.location.href = 'deposit.html';
+                return;
+            }
+
             if(gameState === 'crashed' || gameState === 'waiting') {
-                if(!isBetPlaced) {
-                    // Place Bet -> Minus from Balance
-                    if(userData.balance < amt) {
-                        alert('❌ Insufficient balance! Please deposit first.');
-                        return;
-                    }
+                if(!bets[id].placed) {
                     userData.balance -= amt;
                     updateBalanceUI();
 
-                    activeBetAmount = amt;
-                    isBetPlaced = true;
+                    bets[id].amount = amt;
+                    bets[id].placed = true;
                     btn.className = "action-bet-btn cashout";
                     btn.innerText = `CASHOUT ৳${amt}`;
                 } else {
-                    // Cancel Bet before flight takes off
-                    userData.balance += activeBetAmount;
+                    userData.balance += bets[id].amount;
                     updateBalanceUI();
-                    isBetPlaced = false;
+                    bets[id].placed = false;
                     btn.className = "action-bet-btn";
                     btn.innerText = `BET ৳${amt}`;
                 }
-            } else if(gameState === 'flying' && isBetPlaced) {
-                // Manual Cashout during flight -> Add Winning to Balance
-                let winAmount = (activeBetAmount * mult).toFixed(2);
-                userData.balance = parseFloat((userData.balance + parseFloat(winAmount)).toFixed(2));
+            } else if(gameState === 'flying' && bets[id].placed) {
+                let winAmount = parseFloat((bets[id].amount * mult).toFixed(2));
+                userData.balance = parseFloat((userData.balance + winAmount).toFixed(2));
                 updateBalanceUI();
 
-                alert(`🎉 Success! You won ৳${winAmount} at ${mult.toFixed(2)}x`);
-                saveActivity('Win', activeBetAmount, winAmount, mult.toFixed(2));
+                alert(`🎉 Success! Won ৳${winAmount} at ${mult.toFixed(2)}x`);
+                saveActivity('Win', bets[id].amount, winAmount, mult.toFixed(2));
 
-                isBetPlaced = false;
+                bets[id].placed = false;
                 btn.className = "action-bet-btn";
                 btn.innerText = `BET ৳${amt}`;
             }
@@ -260,13 +305,7 @@
 
         function saveActivity(status, bet, won, multiplier) {
             let acts = JSON.parse(localStorage.getItem('userActivities_' + currEmail) || '[]');
-            acts.unshift({
-                status: status,
-                bet: bet,
-                won: won,
-                mult: multiplier,
-                time: new Date().toLocaleTimeString()
-            });
+            acts.unshift({ status, bet, won, mult: multiplier, time: new Date().toLocaleTimeString() });
             localStorage.setItem('userActivities_' + currEmail, JSON.stringify(acts));
             renderHistory();
         }
@@ -287,6 +326,7 @@
         }
 
         renderHistory();
+        updateStrip();
         startGameCycle();
     </script>
 </body>
