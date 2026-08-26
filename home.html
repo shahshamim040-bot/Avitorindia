@@ -1,91 +1,293 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviator India - Game Home</title>
+    <title>Aviator - Original Game Interface</title>
     <style>
-        body { background: #090d16; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .notice-board { background: #dc2626; color: white; padding: 10px; text-align: center; font-weight: bold; }
-        .header { background: #111827; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1f2937; }
-        .nav-links a { color: #38bdf8; text-decoration: none; margin-left: 10px; font-size: 14px; }
-        .container { max-width: 800px; margin: 20px auto; padding: 15px; text-align: center; }
-        .game-box { background: #1e293b; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .plane-screen { width: 100%; height: 280px; background: #0f172a; border-radius: 8px; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; border: 1px solid #334155; }
-        #multiplier { font-size: 55px; font-weight: bold; color: #22c55e; }
-        .btn-group { margin-top: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .btn { padding: 12px 20px; color: #fff; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; text-decoration: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0e1118; color: #fff; overflow-x: hidden; }
+
+        /* Top Bar */
+        .top-bar { background: #181d28; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 2px solid #262c3a; }
+        .logo { font-size: 20px; font-weight: bold; color: #ef4444; font-style: italic; display: flex; align-items: center; gap: 5px; }
+        .user-panel { display: flex; align-items: center; gap: 15px; }
+        .balance-box { background: #11141d; padding: 5px 12px; border-radius: 20px; border: 1px solid #334155; font-size: 14px; color: #22c55e; font-weight: bold; }
+        .menu-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
+
+        /* Notice Board */
+        .notice-bar { background: #dc2626; color: #fff; padding: 6px; text-align: center; font-size: 13px; font-weight: bold; }
+
+        /* Multiplier History Bar on Top */
+        .history-strip { background: #131722; padding: 8px 10px; display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid #222a38; }
+        .mult-pill { background: #1e2637; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: #a855f7; border: 1px solid #3b82f6; white-space: nowrap; }
+
+        /* Side Menu Drawer */
+        .drawer { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #181d28; z-index: 1000; box-shadow: -5px 0 15px rgba(0,0,0,0.7); transition: 0.3s ease; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .drawer.open { right: 0; }
+        .drawer h3 { color: #38bdf8; border-bottom: 1px solid #2d3748; padding-bottom: 10px; }
+        .drawer a { color: #fff; text-decoration: none; padding: 10px; background: #222b3c; border-radius: 5px; font-size: 14px; display: block; transition: 0.2s; }
+        .drawer a:hover { background: #2563eb; }
+        .close-drawer { align-self: flex-end; background: #ef4444; border: none; color: #fff; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+
+        /* Game Arena */
+        .game-container { max-width: 600px; margin: 10px auto; padding: 10px; }
+        .plane-screen { width: 100%; height: 260px; background: radial-gradient(circle, #2a0845 0%, #0e1118 100%); border-radius: 10px; position: relative; display: flex; justify-content: center; align-items: center; border: 2px solid #222b3c; overflow: hidden; }
+        .plane-icon { font-size: 50px; position: absolute; transition: 0.1s linear; display: none; }
+        #multiplier-display { font-size: 45px; font-weight: bold; color: #fff; z-index: 2; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+
+        /* Betting Controls (Dual Panel like Original) */
+        .bet-section { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .bet-card { background: #181d28; border: 1px solid #262c3a; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .bet-row { display: flex; justify-content: space-between; align-items: center; }
+        .amount-input-group { display: flex; align-items: center; background: #0e1118; border: 1px solid #334155; border-radius: 6px; overflow: hidden; width: 45%; }
+        .amount-input-group button { background: #222b3c; color: #fff; border: none; padding: 8px 12px; cursor: pointer; font-weight: bold; }
+        .amount-input-group input { width: 100%; background: transparent; border: none; color: #fff; text-align: center; font-weight: bold; font-size: 16px; outline: none; }
+        
+        .preset-btns { display: flex; gap: 5px; width: 50%; }
+        .preset-btns button { flex: 1; background: #222b3c; border: none; color: #cbd5e1; padding: 6px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+        
+        .action-bet-btn { width: 100%; padding: 14px; background: #16a34a; color: #fff; font-size: 18px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .action-bet-btn.cashout { background: #ca8a04; }
+        .action-bet-btn:disabled { background: #475569; cursor: not-allowed; }
+
+        /* History Table Section */
+        .history-box { max-width: 600px; margin: 15px auto; background: #181d28; padding: 12px; border-radius: 10px; }
+        .history-box h4 { margin-bottom: 8px; color: #38bdf8; font-size: 14px; }
+        .hist-item { background: #0e1118; padding: 8px 12px; margin-bottom: 6px; border-radius: 5px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #3b82f6; }
     </style>
 </head>
 <body>
-    <div class="notice-board" id="notice-display">📢 নোটিশ: স্বাগতম Aviator India-এ!</div>
-    
-    <div class="header">
-        <h2>✈️ Aviator India</h2>
-        <div class="nav-links">
-            <span>ব্যালেন্স: ৳<strong id="bal-show">0</strong></span>
-            <a href="profile.php" onclick="event.preventDefault(); location.href='profile.html';">প্রোফাইল</a>
-            <a href="deposit.html">ডিপোজিট</a>
-            <a href="index.html" style="color: #ef4444;">লগআউট</a>
+
+    <!-- Notice Bar -->
+    <div class="notice-bar" id="notice-text">📢 Notice: Welcome to Aviator India! Place your bets now.</div>
+
+    <!-- Top Header Bar -->
+    <div class="top-bar">
+        <div class="logo">✈️ Aviator</div>
+        <div class="user-panel">
+            <div class="balance-box">Balance: ৳<span id="user-balance">0</span></div>
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
         </div>
     </div>
 
-    <div class="container">
-        <div class="game-box">
-            <div class="plane-screen">
-                <div id="multiplier">1.00x</div>
-            </div>
-            <div id="prediction-box" style="margin-top: 15px; color: #facc15; font-weight: bold;"></div>
-            <div class="btn-group">
-                <a href="deposit.html" class="btn" style="background: #16a34a;">টাকা ডিপোজিট করুন</a>
-                <a href="withdraw.html" class="btn" style="background: #ca8a04;">উইথড্র করুন</a>
-                <a href="history.html" class="btn" style="background: #2563eb;">হিস্ট্রি ও অ্যাক্টিভিটি</a>
+    <!-- Multiplier Past History Strip -->
+    <div class="history-strip" id="history-strip">
+        <div class="mult-pill">1.45x</div>
+        <div class="mult-pill" style="color: #22c55e;">3.20x</div>
+        <div class="mult-pill">1.12x</div>
+        <div class="mult-pill" style="color: #ef4444;">1.02x</div>
+        <div class="mult-pill">5.80x</div>
+    </div>
+
+    <!-- Side Menu Drawer -->
+    <div class="drawer" id="side-drawer">
+        <button class="close-drawer" onclick="toggleMenu()">✕ Close</button>
+        <h3>Menu Options</h3>
+        <a href="profile.html">👤 My Profile</a>
+        <a href="deposit.html">💰 Deposit Money</a>
+        <a href="withdraw.html">🏦 Withdraw Money</a>
+        <a href="history.html">📊 Bet & Activity History</a>
+        <a href="index.html" style="color: #ef4444;">🚪 Logout</a>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        <div class="plane-screen">
+            <div id="plane" class="plane-icon">✈️</div>
+            <div id="multiplier-display">1.00x</div>
+        </div>
+
+        <!-- Dual Bet Panel -->
+        <div class="bet-section">
+            <!-- Bet Box 1 -->
+            <div class="bet-card">
+                <div class="bet-row">
+                    <div class="amount-input-group">
+                        <button onclick="changeAmt('bet1', -10)">-</button>
+                        <input type="number" id="bet1-amount" value="10">
+                        <button onclick="changeAmt('bet1', 10)">+</button>
+                    </div>
+                    <div class="preset-btns">
+                        <button onclick="setAmt('bet1', 50)">50</button>
+                        <button onclick="setAmt('bet1', 100)">100</button>
+                        <button onclick="setAmt('bet1', 500)">500</button>
+                    </div>
+                </div>
+                <button id="bet1-btn" class="action-bet-btn" onclick="toggleBet(1)">BET ৳10</button>
             </div>
         </div>
+    </div>
+
+    <!-- User Bet History Section -->
+    <div class="history-box">
+        <h4>Recent Bet Activities</h4>
+        <div id="user-act-history">No bets placed yet.</div>
     </div>
 
     <script>
+        // Load User Data
         let currEmail = localStorage.getItem('currentUser');
-        let userData = JSON.parse(localStorage.getItem(currEmail));
-        if(userData) {
-            document.getElementById('bal-show').innerText = userData.balance;
+        let userData = JSON.parse(localStorage.getItem(currEmail)) || { balance: 1000 };
+        document.getElementById('user-balance').innerText = userData.balance;
+
+        function updateBalanceUI() {
+            document.getElementById('user-balance').innerText = userData.balance;
+            localStorage.setItem(currEmail, JSON.stringify(userData));
         }
 
-        // নোটিশ লোড
-        let savedNotice = localStorage.getItem('adminNotice');
-        if(savedNotice) document.getElementById('notice-display').innerText = "📢 নোটিশ: " + savedNotice;
+        // Menu Toggle
+        function toggleMenu() {
+            document.getElementById('side-drawer').classList.toggle('open');
+        }
 
-        // অ্যাডমিন প্রেডিকশন ও লাইভ বিমান উড়ার লজিক
+        // Notice Load
+        let adminNotice = localStorage.getItem('adminNotice');
+        if(adminNotice) document.getElementById('notice-text').innerText = "📢 Notice: " + adminNotice;
+
+        // Amount Adjuster
+        function changeAmt(id, val) {
+            let input = document.getElementById('bet1-amount');
+            let current = parseInt(input.value) || 0;
+            let res = current + val;
+            if(res >= 10) input.value = res;
+        }
+        function setAmt(id, val) {
+            document.getElementById('bet1-amount').value = val;
+        }
+
+        // Game Logic & Betting Engine
+        let gameState = 'waiting'; // waiting, flying, crashed
         let mult = 1.00;
-        function startFlight() {
-            mult = 1.00;
-            let elem = document.getElementById('multiplier');
-            elem.style.color = "#22c55e";
-            
-            // অ্যাডমিন যদি নির্দিষ্ট কোনো প্রেডিকশন সেট করে থাকে
-            let customCrash = localStorage.getItem('nextCrash_' + currEmail);
-            let crashAt = customCrash ? parseFloat(customCrash) : (Math.random() * 4 + 1.3).toFixed(2);
-            
-            if(customCrash) {
-                document.getElementById('prediction-box').innerText = "⭐ স্পেশাল প্রেডিকশন সেট করা আছে!";
-            } else {
-                document.getElementById('prediction-box').innerText = "";
-            }
+        let isBetPlaced = false;
+        let activeBetAmount = 0;
+        let flightTimer = null;
 
-            let timer = setInterval(() => {
-                mult += 0.04;
-                elem.innerText = mult.toFixed(2) + "x";
-                if(mult >= crashAt) {
-                    clearInterval(timer);
-                    elem.style.color = "#ef4444";
-                    elem.innerText = "CRASHED! (" + crashAt + "x)";
-                    // একবার ব্যবহার হওয়ার পর কাস্টম প্রেডিকশন মুছে ফেলা
-                    localStorage.removeItem('nextCrash_' + currEmail);
-                    setTimeout(startFlight, 4000);
-                }
-            }, 200);
+        function startGameCycle() {
+            gameState = 'waiting';
+            mult = 1.00;
+            let disp = document.getElementById('multiplier-display');
+            let plane = document.getElementById('plane');
+            let btn = document.getElementById('bet1-btn');
+            
+            disp.style.color = "#38bdf8";
+            disp.innerText = "Taking off in 3s...";
+            plane.style.display = "none";
+
+            setTimeout(() => {
+                gameState = 'flying';
+                plane.style.display = "block";
+                
+                // Check Admin Custom Prediction or Random Crash
+                let customCrash = localStorage.getItem('nextCrash_' + currEmail);
+                let crashPoint = customCrash ? parseFloat(customCrash) : (Math.random() * 4 + 1.2).toFixed(2);
+                if(customCrash) localStorage.removeItem('nextCrash_' + currEmail);
+
+                flightTimer = setInterval(() => {
+                    mult += 0.03;
+                    disp.innerText = mult.toFixed(2) + "x";
+
+                    // If user placed bet and wants to cashout
+                    if(isBetPlaced && btn.classList.contains('cashout')) {
+                        // Live button text update with winning amount
+                        let winVal = (activeBetAmount * mult).toFixed(2);
+                        btn.innerText = `CASHOUT ৳${winVal}`;
+                    }
+
+                    if(mult >= crashPoint) {
+                        clearInterval(flightTimer);
+                        gameState = 'crashed';
+                        disp.style.color = "#ef4444";
+                        disp.innerText = `CRASHED (${crashPoint}x)`;
+                        plane.style.display = "none";
+
+                        // If user didn't cashout before crash -> Loss
+                        if(isBetPlaced) {
+                            isBetPlaced = false;
+                            btn.className = "action-bet-btn";
+                            btn.innerText = `BET ৳${activeBetAmount}`;
+                            btn.disabled = false;
+                            saveActivity('Loss', activeBetAmount, 0, crashPoint);
+                        }
+
+                        setTimeout(startGameCycle, 4000);
+                    }
+                }, 150);
+            }, 3000);
         }
-        setTimeout(startFlight, 1500);
+
+        function toggleBet(boxId) {
+            let btn = document.getElementById('bet1-btn');
+            let amtInput = document.getElementById('bet1-amount');
+            let amt = parseFloat(amtInput.value);
+
+            if(gameState === 'crashed' || gameState === 'waiting') {
+                if(!isBetPlaced) {
+                    // Place Bet -> Minus from Balance
+                    if(userData.balance < amt) {
+                        alert('❌ Insufficient balance! Please deposit first.');
+                        return;
+                    }
+                    userData.balance -= amt;
+                    updateBalanceUI();
+
+                    activeBetAmount = amt;
+                    isBetPlaced = true;
+                    btn.className = "action-bet-btn cashout";
+                    btn.innerText = `CASHOUT ৳${amt}`;
+                } else {
+                    // Cancel Bet before flight takes off
+                    userData.balance += activeBetAmount;
+                    updateBalanceUI();
+                    isBetPlaced = false;
+                    btn.className = "action-bet-btn";
+                    btn.innerText = `BET ৳${amt}`;
+                }
+            } else if(gameState === 'flying' && isBetPlaced) {
+                // Manual Cashout during flight -> Add Winning to Balance
+                let winAmount = (activeBetAmount * mult).toFixed(2);
+                userData.balance = parseFloat((userData.balance + parseFloat(winAmount)).toFixed(2));
+                updateBalanceUI();
+
+                alert(`🎉 Success! You won ৳${winAmount} at ${mult.toFixed(2)}x`);
+                saveActivity('Win', activeBetAmount, winAmount, mult.toFixed(2));
+
+                isBetPlaced = false;
+                btn.className = "action-bet-btn";
+                btn.innerText = `BET ৳${amt}`;
+            }
+        }
+
+        function saveActivity(status, bet, won, multiplier) {
+            let acts = JSON.parse(localStorage.getItem('userActivities_' + currEmail) || '[]');
+            acts.unshift({
+                status: status,
+                bet: bet,
+                won: won,
+                mult: multiplier,
+                time: new Date().toLocaleTimeString()
+            });
+            localStorage.setItem('userActivities_' + currEmail, JSON.stringify(acts));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            let acts = JSON.parse(localStorage.getItem('userActivities_' + currEmail) || '[]');
+            let box = document.getElementById('user-act-history');
+            let html = "";
+            acts.slice(0, 5).forEach(a => {
+                let color = a.status === 'Win' ? '#22c55e' : '#ef4444';
+                let icon = a.status === 'Win' ? '✅' : '❌';
+                html += `<div class="history-item" style="border-left-color: ${color};">
+                    <span>${icon} ${a.status} | Bet: ৳${a.bet}</span>
+                    <span style="color:${color}; font-weight:bold;">${a.status === 'Win' ? '+৳' + a.won : '-৳' + a.bet} (${a.mult}x)</span>
+                </div>`;
+            });
+            box.innerHTML = html || 'No recent bet history.';
+        }
+
+        renderHistory();
+        startGameCycle();
     </script>
 </body>
 </html>
