@@ -15,20 +15,25 @@
         .balance-box { background: #0c0f15; padding: 6px 14px; border-radius: 20px; border: 1px solid #1e293b; font-size: 14px; color: #22c55e; font-weight: bold; }
         .menu-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
 
+        /* Notice Ticker */
+        .notice-ticker { background: #1e293b; color: #f59e0b; padding: 8px 12px; font-size: 12px; white-space: nowrap; overflow: hidden; position: relative; border-bottom: 1px solid #2a364f; }
+        .notice-ticker span { display: inline-block; animation: ticker 15s linear infinite; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
         /* Multiplier Strip */
         .history-strip { background: #0c0f15; padding: 6px 10px; display: flex; gap: 6px; overflow-x: auto; border-bottom: 1px solid #1a2233; }
         .mult-pill { background: #161e2e; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; color: #a855f7; border: 1px solid #2a364f; white-space: nowrap; }
         .mult-pill.high { color: #22c55e; }
 
         /* Side Menu Drawer */
-        .drawer { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #131823; z-index: 1000; box-shadow: -5px 0 15px rgba(0,0,0,0.8); transition: 0.3s ease; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .drawer { position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background: #131823; z-index: 1000; box-shadow: -5px 0 15px rgba(0,0,0,0.8); transition: 0.3s ease; padding: 20px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
         .drawer.open { right: 0; }
-        .drawer h3 { color: #38bdf8; border-bottom: 1px solid #1f293d; padding-bottom: 8px; }
-        .drawer button { color: #fff; text-decoration: none; padding: 12px; background: #1a2233; border: none; border-radius: 6px; font-size: 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left; width: 100%; transition: 0.2s; }
+        .drawer h3 { color: #38bdf8; border-bottom: 1px solid #1f293d; padding-bottom: 8px; font-size: 16px; }
+        .drawer button, .drawer .menu-link { color: #fff; text-decoration: none; padding: 12px; background: #1a2233; border: none; border-radius: 6px; font-size: 13px; display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left; width: 100%; transition: 0.2s; }
         .drawer button:hover { background: #2563eb; }
         .close-drawer { align-self: flex-end; background: #ef4444 !important; width: auto !important; padding: 6px 12px !important; }
 
-        /* Full Page View Containers (Modal replacement for Profile/Wallet) */
+        /* Full Page View Containers */
         .page-view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0c0f15; z-index: 2000; overflow-y: auto; padding: 15px; }
         .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f293d; padding-bottom: 12px; margin-bottom: 15px; }
         .page-header h2 { color: #38bdf8; font-size: 18px; }
@@ -40,20 +45,20 @@
         
         .instruction-box { background: #1e293b; border-left: 4px solid #f59e0b; padding: 10px; font-size: 12px; color: #e2e8f0; border-radius: 4px; margin-bottom: 12px; line-height: 1.5; }
 
-        /* Custom Custom Toast / Alert Box (No GitHub Name) */
+        /* Custom Popup Modal (Clean & Modern) */
         .custom-alert { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; }
         .alert-box { background: #131823; border: 1px solid #2a364f; padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; display: flex; flex-direction: column; gap: 12px; }
         .alert-box p { font-size: 14px; color: #fff; line-height: 1.4; }
         .alert-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; align-self: center; }
 
-        /* Game Arena */
+        /* Game Arena - High Speed Jet */
         .game-container { width: 100%; max-width: 500px; margin: 10px auto; padding: 8px; }
         .plane-screen { width: 100%; height: 240px; background: radial-gradient(circle, #3b0728 0%, #0c0f15 100%); border-radius: 10px; position: relative; display: flex; justify-content: center; align-items: center; border: 2px solid #1a2233; overflow: hidden; }
         
-        .graph-curve { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(225, 29, 72, 0.35), transparent); clip-path: polygon(0 100%, 0 75%, 35% 60%, 70% 35%, 100% 5%); display: none; }
+        .graph-curve { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(225, 29, 72, 0.4), transparent); clip-path: polygon(0 100%, 0 75%, 40% 55%, 80% 25%, 100% 0%); display: none; }
         
-        .plane-container { position: absolute; bottom: 15px; left: 15px; display: none; transition: 0.1s linear; z-index: 3; }
-        .plane-svg { width: 80px; height: 48px; fill: #ef4444; filter: drop-shadow(0 0 10px #ef4444); }
+        .plane-container { position: absolute; bottom: 10px; left: 10px; display: none; transition: 0.05s linear; z-index: 3; }
+        .plane-svg { width: 95px; height: 55px; fill: #ef4444; filter: drop-shadow(0 0 12px #ff1744); transform: rotate(-15deg); }
 
         #multiplier-display { font-size: 45px; font-weight: bold; color: #fff; z-index: 2; text-shadow: 0 0 12px rgba(0,0,0,0.9); }
 
@@ -89,26 +94,29 @@
         </div>
     </div>
 
+    <!-- Notice Ticker -->
+    <div class="notice-ticker">
+        <span id="ticker-text">Welcome to Aviator Arena! Deposit minimum ৳500 and enjoy high-speed gaming.</span>
+    </div>
+
     <!-- Multiplier Strip -->
     <div class="history-strip" id="history-strip">
         <div class="mult-pill">1.20x</div>
         <div class="mult-pill high">2.80x</div>
-        <div class="mult-pill">1.05x</div>
-        <div class="mult-pill high">4.74x</div>
     </div>
 
     <!-- Side Menu Drawer -->
     <div class="drawer" id="side-drawer">
         <button class="close-drawer" onclick="toggleMenu()">✕ Close</button>
         <h3>Menu Options</h3>
-        <button onclick="openPage('profilePage')">👤 My Profile</button>
+        <button onclick="openPage('profilePage')">👤 My Profile & Referrals</button>
         <button onclick="openPage('depositPage')">💰 Deposit Money (Min ৳500)</button>
         <button onclick="openPage('withdrawPage')">🏦 Withdraw Money (Min ৳1000)</button>
         <button onclick="openPage('historyPage')">📊 Bet & Transaction History</button>
         <button onclick="logout()" style="color: #ef4444;">🚪 Logout</button>
     </div>
 
-    <!-- Custom Alert Modal (Replaces Browser Alert) -->
+    <!-- Custom Alert Modal -->
     <div id="customAlert" class="custom-alert">
         <div class="alert-box">
             <p id="alert-msg">Message here</p>
@@ -120,16 +128,24 @@
     <!-- Profile Page -->
     <div id="profilePage" class="page-view">
         <div class="page-header">
-            <h2>My Profile</h2>
+            <h2>My Profile & Referral</h2>
             <button class="back-btn" onclick="closePage('profilePage')">Back</button>
         </div>
         <div class="form-group">
-            <label>User Account / Email:</label>
+            <label>User Account Email:</label>
             <input type="text" id="prof-email" readonly>
         </div>
         <div class="form-group">
-            <label>Approved Balance:</label>
+            <label>Main Balance (Unlocked):</label>
             <input type="text" id="prof-bal" readonly style="color: #22c55e; font-weight: bold;">
+        </div>
+        <div class="form-group">
+            <label>Bonus Balance (Locked until 1st Deposit):</label>
+            <input type="text" id="prof-bonus" readonly style="color: #f59e0b; font-weight: bold;">
+        </div>
+        <div class="form-group">
+            <label>Your Referral Link (Earn ৳100 per referral upon their deposit):</label>
+            <input type="text" id="prof-ref" readonly style="color: #38bdf8;">
         </div>
     </div>
 
@@ -139,14 +155,14 @@
             <h2>Deposit Money</h2>
             <button class="back-btn" onclick="closePage('depositPage')">Back</button>
         </div>
-        <div class="instruction-box">
-            ℹ️ <strong>নির্দেশনা:</strong> সর্বনিম্ন ডিপোজিট ৫০০ টাকা। নিচে পেমেন্ট মেথড সিলেক্ট করে নির্দিষ্ট নাম্বারে টাকা পাঠান। এরপর প্রেরক নাম্বার, ট্রানজেকশন আইডি (TrxID) এবং স্ক্রিনশট দিয়ে সাবমিট করুন। অ্যাডমিন চেক করে অনুমোদন দিলে ব্যালেন্স অটো যোগ হবে। পেন্ডিং স্ট্যাটাস দেখতে হিস্টরি পেজে যান।
+        <div class="instruction-box" id="deposit-instruction">
+            ℹ️ <strong>Instructions:</strong> Minimum deposit is ৳500. Cashout your money to the agent number shown below. Submit your sender number and TrxID. The deposit will show as pending until approved by the admin.
         </div>
         <div class="form-group">
-            <label>Select Method & Agent Number:</label>
-            <select id="dep-method" onchange="updateAgentNum()">
-                <option value="bKash">bKash Personal: 01711223344</option>
-                <option value="Nagad">Nagad Personal: 01888997766</option>
+            <label>Select Method & Cashout Number:</label>
+            <select id="dep-method">
+                <option value="bKash">bKash Personal: 01711223344 (Cashout here)</option>
+                <option value="Nagad">Nagad Personal: 01888997766 (Cashout here)</option>
             </select>
         </div>
         <div class="form-group">
@@ -154,16 +170,12 @@
             <input type="number" id="dep-amount" placeholder="Minimum 500">
         </div>
         <div class="form-group">
-            <label>যে নাম্বার থেকে টাকা পাঠিয়েছেন (Sender Number):</label>
+            <label>Sender Account Number:</label>
             <input type="text" id="dep-sender" placeholder="01XXXXXXXXX">
         </div>
         <div class="form-group">
             <label>Transaction ID (TrxID):</label>
             <input type="text" id="dep-trx" placeholder="Enter TrxID">
-        </div>
-        <div class="form-group">
-            <label>পেমেন্ট স্ক্রিনশট (Screenshot):</label>
-            <input type="file" id="dep-file" accept="image/*">
         </div>
         <button class="action-bet-btn" onclick="submitDeposit()">Submit Deposit (Pending)</button>
     </div>
@@ -175,7 +187,7 @@
             <button class="back-btn" onclick="closePage('withdrawPage')">Back</button>
         </div>
         <div class="instruction-box">
-            ℹ️ <strong>নির্দেশনা:</strong> সর্বনিম্ন উইথড্র ১০০০ টাকা। সঠিক অ্যাকাউন্ট নাম্বার দিয়ে রিকোয়েস্ট পাঠান। অ্যাডমিন অ্যাপ্রুভ করলে টাকা আপনার বিকাশ/নগদে চলে যাবে।
+            ℹ️ <strong>Instructions:</strong> Minimum withdrawal is ৳1000. Enter your correct receiver number. Admin will review and process your cashout request.
         </div>
         <div class="form-group">
             <label>Select Method:</label>
@@ -201,7 +213,7 @@
             <h2>Bet & Transaction History</h2>
             <button class="back-btn" onclick="closePage('historyPage')">Back</button>
         </div>
-        <h3 style="color: #38bdf8; font-size: 14px; margin-bottom: 8px;">📊 Deposit & Withdraw Logs (Pending/Success)</h3>
+        <h3 style="color: #38bdf8; font-size: 14px; margin-bottom: 8px;">📊 Transactions (Pending/Approved)</h3>
         <div id="tx-history-list" style="margin-bottom: 20px;">No transactions yet.</div>
         
         <h3 style="color: #38bdf8; font-size: 14px; margin-bottom: 8px;">🚀 Game Bet History</h3>
@@ -212,7 +224,7 @@
     <div class="game-container">
         <div class="plane-screen">
             <div class="graph-curve" id="graph-curve"></div>
-            <!-- Pro Original Red Propeller Airplane SVG -->
+            <!-- High Speed Jet SVG -->
             <div id="plane-container" class="plane-container">
                 <svg class="plane-svg" viewBox="0 0 512 512">
                     <path d="M501.6 235.5l-133-68.5-115.8-93.5c-8.9-7.2-21-9.2-31.7-5.2-13.8 5.2-22.9 18.6-22.9 33.6v64.9L64 213.3c-17.5 7.1-29 24.3-29 43.4s11.5 36.3 29 43.4l134.2 54.4v64.9c0 15 9.1 28.4 22.9 33.6 10.7 4 22.8 2 31.7-5.2l115.8-93.5 133-68.5c15.8-8.1 26-24.3 26-42.2s-10.2-34.1-26-42.2z"/>
@@ -264,13 +276,28 @@
     </div>
 
     <script>
-        let currEmail = localStorage.getItem('currentUser') || 'demo_player';
-        let userData = JSON.parse(localStorage.getItem(currEmail)) || { balance: 0 };
+        let currEmail = localStorage.getItem('currentUser') || 'player@gmail.com';
+        
+        // Initialize User if not exists with ৳100 signup bonus (locked)
+        let allUsers = JSON.parse(localStorage.getItem('admin_users') || '{}');
+        if(!allUsers[currEmail]) {
+            allUsers[currEmail] = { balance: 0, bonus: 100, deposited: false, status: 'Active' };
+            localStorage.setItem('admin_users', JSON.stringify(allUsers));
+        }
+
+        let userData = allUsers[currEmail];
         document.getElementById('user-balance').innerText = userData.balance;
+
+        // Check Notice & Numbers from Admin Settings
+        let adminSettings = JSON.parse(localStorage.getItem('admin_settings') || '{}');
+        if(adminSettings.notice) {
+            document.getElementById('ticker-text').innerText = adminSettings.notice;
+        }
 
         function updateBalanceUI() {
             document.getElementById('user-balance').innerText = userData.balance;
-            localStorage.setItem(currEmail, JSON.stringify(userData));
+            allUsers[currEmail] = userData;
+            localStorage.setItem('admin_users', JSON.stringify(allUsers));
         }
 
         function toggleMenu() {
@@ -290,6 +317,8 @@
             if(pageId === 'profilePage') {
                 document.getElementById('prof-email').value = currEmail;
                 document.getElementById('prof-bal').value = "৳" + userData.balance;
+                document.getElementById('prof-bonus').value = "৳" + userData.bonus + (userData.deposited ? " (Unlocked!)" : " (Locked - Deposit to unlock)");
+                document.getElementById('prof-ref').value = window.location.origin + "/home.html?ref=" + btoa(currEmail);
             }
             if(pageId === 'historyPage') {
                 renderFullHistory();
@@ -310,49 +339,51 @@
             let amt = parseFloat(document.getElementById('dep-amount').value);
             let sender = document.getElementById('dep-sender').value;
             let trx = document.getElementById('dep-trx').value;
+            let method = document.getElementById('dep-method').value;
 
             if(!amt || amt < 500) {
-                showAlert('⚠️ সর্বনিম্ন ডিপোজিট ৫০০ টাকা হতে হবে!');
+                showAlert('⚠️ Minimum deposit is ৳500!');
                 return;
             }
             if(!sender || !trx) {
-                showAlert('⚠️ প্রেরক নাম্বার এবং ট্রানজেকশন আইডি বাধ্যতামূলক!');
+                showAlert('⚠️ Sender number and TrxID are required!');
                 return;
             }
 
-            let txs = JSON.parse(localStorage.getItem('userTx_' + currEmail) || '[]');
-            txs.unshift({ type: 'Deposit', amount: amt, sender: sender, trx: trx, status: 'Pending', time: new Date().toLocaleTimeString() });
-            localStorage.setItem('userTx_' + currEmail, JSON.stringify(txs));
+            let txs = JSON.parse(localStorage.getItem('admin_deposits') || '[]');
+            txs.unshift({ email: currEmail, method, amount: amt, sender, trx, status: 'Pending', time: new Date().toLocaleTimeString() });
+            localStorage.setItem('admin_deposits', JSON.stringify(txs));
 
-            showAlert('✅ ডিপোজিট রিকোয়েস্ট সফলভাবে সাবমিট হয়েছে। অনুগ্রহ করে অপেক্ষা করুন, অ্যাডমিন অ্যাপ্রুভ করলে ব্যালেন্সে যোগ হবে।');
+            showAlert('✅ Deposit request submitted successfully! Please wait for admin approval.');
             closePage('depositPage');
         }
 
         function submitWithdraw() {
             let amt = parseFloat(document.getElementById('w-amount').value);
             let num = document.getElementById('w-number').value;
+            let method = document.getElementById('w-method').value;
 
             if(!amt || amt < 1000) {
-                showAlert('⚠️ সর্বনিম্ন উইথড্র ১০০০ টাকা হতে হবে!');
+                showAlert('⚠️ Minimum withdrawal is ৳1000!');
                 return;
             }
             if(!num) {
-                showAlert('⚠️ সঠিক অ্যাকাউন্ট নাম্বার দিন!');
+                showAlert('⚠️ Enter receiver account number!');
                 return;
             }
             if(userData.balance < amt) {
-                showAlert('❌ একাউন্টে পর্যাপ্ত ব্যালেন্স নেই!');
+                showAlert('❌ Insufficient balance for withdrawal!');
                 return;
             }
 
             userData.balance -= amt;
             updateBalanceUI();
 
-            let txs = JSON.parse(localStorage.getItem('userTx_' + currEmail) || '[]');
-            txs.unshift({ type: 'Withdraw', amount: amt, number: num, status: 'Pending', time: new Date().toLocaleTimeString() });
-            localStorage.setItem('userTx_' + currEmail, JSON.stringify(txs));
+            let txs = JSON.parse(localStorage.getItem('admin_withdraws') || '[]');
+            txs.unshift({ email: currEmail, method, amount: amt, number: num, status: 'Pending', time: new Date().toLocaleTimeString() });
+            localStorage.setItem('admin_withdraws', JSON.stringify(txs));
 
-            showAlert('✅ উইথড্র রিকোয়েস্ট পেন্ডিং রয়েছে। খুব শীঘ্রই আপনার নাম্বারে টাকা পাঠানো হবে।');
+            showAlert('✅ Withdraw request submitted! Pending admin approval.');
             closePage('withdrawPage');
         }
 
@@ -366,12 +397,12 @@
             document.getElementById(idPrefix + '-amount').value = val;
         }
 
-        // Game Engine
+        // High-Speed Jet Game Engine with Admin Prediction Sync
         let gameState = 'waiting';
         let mult = 1.00;
         let bets = { 1: { placed: false, amount: 0 }, 2: { placed: false, amount: 0 } };
         let flightTimer = null;
-        let pastMults = ["1.20x", "2.80x", "1.05x", "4.74x", "1.96x"];
+        let pastMults = ["1.20x", "2.80x"];
 
         function updateStrip() {
             let strip = document.getElementById('history-strip');
@@ -401,16 +432,20 @@
                 plane.style.display = "block";
                 curve.style.display = "block";
                 
-                let crashPoint = (Math.random() * 5 + 1.2).toFixed(2);
+                // Fetch next crash point from Admin settings if set, else random high speed jet crash
+                let adminPreds = JSON.parse(localStorage.getItem('admin_predictions') || '[]');
+                let crashPoint = adminPreds.length > 0 ? parseFloat(adminPreds.shift()) : (Math.random() * 6 + 1.3).toFixed(2);
+                localStorage.setItem('admin_predictions', JSON.stringify(adminPreds));
+
                 let xPos = 10, yPos = 10;
 
                 flightTimer = setInterval(() => {
-                    mult += 0.03;
+                    mult += 0.05; // Faster jet speed
                     disp.innerText = mult.toFixed(2) + "x";
 
-                    xPos += 2.5;
-                    yPos += 1.2;
-                    if(xPos < 280) {
+                    xPos += 3.5;
+                    yPos += 1.8;
+                    if(xPos < 290) {
                         plane.style.transform = `translate(${xPos}px, -${yPos}px)`;
                     }
 
@@ -433,6 +468,11 @@
                         pastMults.push(crashPoint + "x");
                         updateStrip();
 
+                        // Save prediction log for admin view
+                        let logs = JSON.parse(localStorage.getItem('admin_pred_logs') || '[]');
+                        logs.unshift({ crash: crashPoint + "x", time: new Date().toLocaleTimeString() });
+                        localStorage.setItem('admin_pred_logs', JSON.stringify(logs));
+
                         [1, 2].forEach(id => {
                             if(bets[id].placed) {
                                 bets[id].placed = false;
@@ -444,10 +484,10 @@
                             }
                         });
 
-                        setTimeout(startGameCycle, 4000);
+                        setTimeout(startGameCycle, 3000);
                     }
-                }, 180);
-            }, 3000);
+                }, 100);
+            }, 2500);
         }
 
         function toggleBet(id) {
@@ -455,15 +495,29 @@
             let amtInput = document.getElementById(`bet${id}-amount`);
             let amt = parseFloat(amtInput.value);
 
-            if(userData.balance < amt && !bets[id].placed) {
-                showAlert('⚠️ অপর্যাপ্ত ব্যালেন্স! দয়া করে ডিপোজিট করুন।');
+            // Check if user is banned
+            if(userData.status === 'Banned') {
+                showAlert('❌ Your account has been banned by admin!');
+                return;
+            }
+
+            // Check if user has enough balance (include bonus if deposited)
+            let totalAvailBal = userData.balance + (userData.deposited ? userData.bonus : 0);
+            if(totalAvailBal < amt && !bets[id].placed) {
+                showAlert('⚠️ Insufficient balance! Please deposit minimum ৳500.');
                 openPage('depositPage');
                 return;
             }
 
             if(gameState === 'crashed' || gameState === 'waiting') {
                 if(!bets[id].placed) {
-                    userData.balance -= amt;
+                    if(userData.balance >= amt) {
+                        userData.balance -= amt;
+                    } else {
+                        let remaining = amt - userData.balance;
+                        userData.balance = 0;
+                        userData.bonus -= remaining;
+                    }
                     updateBalanceUI();
 
                     bets[id].amount = amt;
@@ -482,7 +536,7 @@
                 userData.balance = parseFloat((userData.balance + winAmount).toFixed(2));
                 updateBalanceUI();
 
-                showAlert(`🎉 অভিনন্দন! আপনি ৳${winAmount} জিতেছেন (${mult.toFixed(2)}x)।`);
+                showAlert(`🎉 Congratulations! You won ৳${winAmount} at ${mult.toFixed(2)}x.`);
                 saveActivity('Win', bets[id].amount, winAmount, mult.toFixed(2));
 
                 bets[id].placed = false;
@@ -514,19 +568,17 @@
         }
 
         function renderFullHistory() {
-            // Render Transactions
-            let txs = JSON.parse(localStorage.getItem('userTx_' + currEmail) || '[]');
+            let txs = JSON.parse(localStorage.getItem('admin_deposits') || '[]').filter(t => t.email === currEmail);
             let txBox = document.getElementById('tx-history-list');
             let txHtml = "";
             txs.forEach(t => {
                 txHtml += `<div class="hist-item" style="border-left-color: #f59e0b; margin-bottom:6px;">
-                    <span>${t.time} - ${t.type}: ৳${t.amount}</span>
+                    <span>${t.time} - ${t.type || 'Deposit'}: ৳${t.amount}</span>
                     <span style="color: #f59e0b; font-weight:bold;">${t.status}</span>
                 </div>`;
             });
             txBox.innerHTML = txHtml || 'No transactions found.';
 
-            // Render Bets
             let acts = JSON.parse(localStorage.getItem('userActivities_' + currEmail) || '[]');
             let box = document.getElementById('full-history-list');
             let html = "";
