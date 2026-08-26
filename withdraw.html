@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>Withdraw & History - Aviator India</title>
+    <style>
+        body { background: #0f172a; color: #fff; font-family: Arial; padding: 20px; }
+        .box { max-width: 500px; margin: auto; background: #1e293b; padding: 20px; border-radius: 8px; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 5px; }
+        button { width: 100%; padding: 10px; background: #ca8a04; border: none; color: #fff; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        .history-item { background: #0f172a; padding: 10px; margin-top: 10px; border-radius: 5px; font-size: 13px; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2>উইথড্র রিকোয়েস্ট করুন</h2>
+    <form onsubmit="submitWithdraw(event)">
+        <select id="wd-method">
+            <option value="bKash">বিকাশ (bKash)</option>
+            <option value="Nagad">নগদ (Nagad)</option>
+        </select>
+        <input type="number" id="wd-amount" placeholder="এমাউন্ট (টাকা)" required>
+        <input type="text" id="wd-num" placeholder="আপনার বিকাশ/নগদ নাম্বার" required>
+        <button type="submit">উইথড্র সাবমিট করুন</button>
+    </form>
+
+    <h3 style="margin-top: 25px;">আপনার অ্যাক্টিভিটি হিস্ট্রি</h3>
+    <div id="history-box">লোড হচ্ছে...</div>
+
+    <p style="text-align: center; margin-top: 15px;"><a href="home.html" style="color: #38bdf8; text-decoration: none;">← হোম পেজে ফিরে যান</a></p>
+</div>
+
+<script>
+    function submitWithdraw(e) {
+        e.preventDefault();
+        let email = localStorage.getItem('currentUser');
+        let amount = document.getElementById('wd-amount').value;
+        
+        let wdData = {
+            id: Date.now(),
+            email: email,
+            amount: amount,
+            status: 'Pending'
+        };
+
+        let allWd = JSON.parse(localStorage.getItem('allWithdraws') || '[]');
+        allWd.push(wdData);
+        localStorage.setItem('allWithdraws', JSON.stringify(allWd));
+
+        alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
+        location.reload();
+    }
+
+    // হিস্ট্রি রেন্ডার
+    let email = localStorage.getItem('currentUser');
+    let deposits = JSON.parse(localStorage.getItem('allDeposits') || '[]').filter(d => d.email === email);
+    let box = document.getElementById('history-box');
+    
+    let html = "";
+    deposits.forEach(d => {
+        let badgeColor = d.status === 'Success' ? 'green' : (d.status === 'Rejected' ? 'red' : 'orange');
+        html += `<div class="history-item">
+            ডিপোজিট: ৳${d.amount} (${d.method}) <br>
+            স্ট্যাটাস: <span style="color:${badgeColor}; font-weight:bold;">${d.status}</span>
+            ${d.reason ? '<br>কারন: ' + d.reason : ''}
+        </div>`;
+    });
+    box.innerHTML = html || 'কোনো হিস্ট্রি পাওয়া যায়নি।';
+</script>
+</body>
+</html>
