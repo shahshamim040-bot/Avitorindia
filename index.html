@@ -1,81 +1,114 @@
-<?php
-session_start();
-if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
-    exit();
-}
-$conn = new mysqli("localhost", "root", "", "aviator_db");
-$email = $_SESSION['user'];
-$user_qry = $conn->query("SELECT * FROM users WHERE email='$email'");
-$user = $user_qry->fetch_assoc();
-
-// Fetch Notice
-$notice_qry = $conn->query("SELECT message FROM notice WHERE id=1");
-$notice = $notice_qry->fetch_assoc()['message'];
-?>
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>Aviator India - Play Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator India - Login / Register</title>
     <style>
-        body { background: #090d16; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .header { background: #111827; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1f2937; }
-        .notice-board { background: #dc2626; color: white; padding: 10px; text-align: center; font-weight: bold; }
-        .game-container { text-align: center; padding: 40px; }
-        .plane-box { width: 100%; height: 300px; background: #1e293b; border-radius: 10px; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; }
-        #multiplier { font-size: 50px; font-weight: bold; color: #22c55e; }
-        .btn-group { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
-        .btn { padding: 10px 20px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        body { background: #0f172a; color: #fff; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .form-box { background: #1e293b; padding: 25px; border-radius: 10px; width: 350px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 5px; }
+        button { width: 100%; padding: 10px; background: #22c55e; border: none; color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #16a34a; }
+        .toggle-link { text-align: center; margin-top: 15px; font-size: 14px; color: #38bdf8; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="notice-board">📢 নোটিশ: <?php echo $notice; ?></div>
-    <div class="header">
-        <h2>✈️ Aviator India</h2>
-        <div>
-            <span>ব্যালেন্স: ৳<strong id="user-bal"><?php echo $user['balance']; ?></strong></span> | 
-            <a href="profile.php" style="color: #38bdf8; text-decoration: none;">প্রোফাইল</a> | 
-            <a href="deposit.php" style="color: #22c55e; text-decoration: none;">ডিপোজিট</a> | 
-            <a href="logout.php" style="color: #ef4444; text-decoration: none;">লগআউট</a>
-        </div>
-    </div>
+    <div class="form-box">
+        <h2 id="form-title" style="text-align: center;">Aviator India Reg.</h2>
+        
+        <!-- রেজিস্ট্রেশন ফর্ম -->
+        <form id="reg-form" onsubmit="handleRegister(event)">
+            <input type="text" id="reg-name" placeholder="আপনার নাম" required>
+            <input type="email" id="reg-email" placeholder="ইমেইল এড্রেস" required>
+            <input type="text" id="reg-country" placeholder="দেশের নাম (যেমন: India)" required>
+            <div style="display: flex; gap: 5px;">
+                <select id="country-code" style="width: 40%;">
+                    <option value="+91">+91 (India)</option>
+                    <option value="+880">+880 (BD)</option>
+                </select>
+                <input type="text" id="reg-phone" placeholder="ফোন নাম্বার" style="width: 60%;" required>
+            </div>
+            <input type="password" id="reg-pass" placeholder="পাসওয়ার্ড" required>
+            <input type="text" id="reg-ref" placeholder="রেফার কোড (যদি থাকে)">
+            <button type="submit">রেজিস্ট্রেশন করুন</button>
+        </form>
 
-    <div class="game-container">
-        <div class="plane-box">
-            <div id="multiplier">1.00x</div>
-        </div>
-        <div class="btn-group">
-            <a href="deposit.php" class="btn" style="background: #16a34a;">টাকা ডিপোজিট করুন</a>
-            <a href="withdraw.php" class="btn" style="background: #ca8a04;">উইথড্র করুন</a>
-            <a href="history.php" class="btn">অ্যাক্টিভিটি হিস্ট্রি</a>
-        </div>
+        <!-- লগইন ফর্ম (শুরুতে হাইড থাকবে) -->
+        <form id="login-form" style="display: none;" onsubmit="handleLogin(event)">
+            <input type="email" id="login-email" placeholder="ইমেইল এড্রেস" required>
+            <input type="password" id="login-pass" placeholder="পাসওয়ার্ড" required>
+            <button type="submit" style="background: #2563eb;">লগইন করুন</button>
+        </form>
+
+        <div class="toggle-link" id="toggle-btn" onclick="toggleForm()">ইতিমধ্যে একাউন্ট আছে? লগইন করুন</div>
     </div>
 
     <script>
-        // Simple Auto Live Flight Simulation (10 Seconds loop)
-        let mult = 1.00;
-        let flightInterval;
-
-        function startFlight() {
-            mult = 1.00;
-            document.getElementById('multiplier').style.color = "#22c55e";
-            document.getElementById('multiplier').innerText = mult + "x";
+        function toggleForm() {
+            let reg = document.getElementById('reg-form');
+            let log = document.getElementById('login-form');
+            let title = document.getElementById('form-title');
+            let btn = document.getElementById('toggle-btn');
             
-            let crashAt = (Math.random() * 5 + 1.2).toFixed(2); // Random crash multiplier
-            
-            let timer = setInterval(() => {
-                mult += 0.05;
-                document.getElementById('multiplier').innerText = mult.toFixed(2) + "x";
-                if(mult >= crashAt) {
-                    clearInterval(timer);
-                    document.getElementById('multiplier').style.color = "#ef4444";
-                    document.getElementById('multiplier').innerText = "CRASHED! (" + crashAt + "x)";
-                    setTimeout(startFlight, 5000); // Restart after 5 seconds
-                }
-            }, 200);
+            if(reg.style.display === 'none') {
+                reg.style.display = 'block';
+                log.style.display = 'none';
+                title.innerText = "Aviator India Reg.";
+                btn.innerText = "ইতিমধ্যে একাউন্ট আছে? লগইন করুন";
+            } else {
+                reg.style.display = 'none';
+                log.style.display = 'block';
+                title.innerText = "Aviator India Login";
+                btn.innerText = "নতুন একাউন্ট খুলতে চান? রেজিস্ট্রেশন করুন";
+            }
         }
-        setTimeout(startFlight, 2000);
+
+        function handleRegister(e) {
+            e.preventDefault();
+            let name = document.getElementById('reg-name').value;
+            let email = document.getElementById('reg-email').value;
+            let pass = document.getElementById('reg-pass').value;
+            let refInput = document.getElementById('reg-ref').value;
+            
+            // ইউনিক রেফারেল কোড তৈরি (নাম দিয়ে)
+            let userRefCode = name.toUpperCase().replace(/\s+/g, '') + Math.floor(100 + Math.random() * 900);
+            
+            let userData = {
+                name: name,
+                email: email,
+                pass: pass,
+                balance: 0,
+                refCode: userRefCode,
+                referredBy: refInput ? refInput : 'None',
+                verified: false,
+                status: 'Active'
+            };
+
+            localStorage.setItem(email, JSON.stringify(userData));
+            localStorage.setItem('currentUser', email);
+            
+            alert('রেজিস্ট্রেশন সফল হয়েছে! টেলিগ্রাম চ্যানেলে জয়েন করুন।');
+            window.location.href = 'home.html'; // হোম পেজে রিডাইরেক্ট
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            let email = document.getElementById('login-email').value;
+            let pass = document.getElementById('login-pass').value;
+            
+            let data = JSON.parse(localStorage.getItem(email));
+            if(data && data.pass === pass) {
+                if(data.status === 'Suspended') {
+                    alert('আপনার একাউন্টটি সাসপেন্ড করা হয়েছে!');
+                    return;
+                }
+                localStorage.setItem('currentUser', email);
+                window.location.href = 'home.html';
+            } else {
+                alert('ইমেইল অথবা পাসওয়ার্ড ভুল!');
+            }
+        }
     </script>
 </body>
 </html>
