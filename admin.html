@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - Aviator India</title>
+    <style>
+        body { background: #0f172a; color: #fff; font-family: Arial; padding: 15px; }
+        .admin-box { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 8px; margin: 6px 0; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 4px; }
+        button { padding: 8px 15px; background: #2563eb; border: none; color: #fff; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { border: 1px solid #334155; padding: 8px; text-align: center; }
+        th { background: #334155; }
+        .btn-app { background: #16a34a; padding: 4px 8px; color: #fff; border: none; cursor: pointer; }
+        .btn-rej { background: #dc2626; padding: 4px 8px; color: #fff; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>👑 Aviator India Admin Panel</h1>
+
+    <!-- নোটিশ বোর্ড আপডেট -->
+    <div class="admin-box">
+        <h3>১. নোটিশ বোর্ড আপডেট</h3>
+        <textarea id="notice-input" rows="2" placeholder="নতুন নোটিশ লিখুন..."></textarea>
+        <button onclick="updateNotice()">নোটিশ পাবলিশ করুন</button>
+    </div>
+
+    <!-- ডিপোজিট নাম্বার পরিবর্তন -->
+    <div class="admin-box">
+        <h3>২. ডিপোজিট নাম্বার পরিবর্তন</h3>
+        <input type="text" id="num-input" placeholder="নতুন বিকাশ/নগদ নাম্বার দিন">
+        <button onclick="updateNumber()">নাম্বার পরিবর্তন করুন</button>
+    </div>
+
+    <!-- গেম প্রেডিকশন কন্ট্রোল -->
+    <div class="admin-box">
+        <h3>৩. গেম প্রেডিকশন সেট করুন (১০০% সঠিক)</h3>
+        <input type="text" id="pred-email" placeholder="ইউজারের ইমেইল দিন">
+        <input type="text" id="pred-mult" placeholder="বিমান কত এমাউন্টে উড়বে বা ক্র্যাশ করবে (যেমন: 5.50)">
+        <button onclick="setPrediction()" style="background: #ca8a04;">প্রেডিকশন সেট করুন</button>
+    </div>
+
+    <!-- ডিপোজিট রিকোয়েস্ট ম্যানেজমেন্ট -->
+    <div class="admin-box">
+        <h3>৪. ডিপোজিট রিকোয়েস্ট লিস্ট</h3>
+        <table>
+            <tr>
+                <th>ইমেইল</th>
+                <th>টাকা</th>
+                <th>ট্রানজেকশন আইডি</th>
+                <th>স্ট্যাটাস</th>
+                <th>অ্যাকশন</th>
+            </tr>
+            <tbody id="deposit-table-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function updateNotice() {
+            let text = document.getElementById('notice-input').value;
+            localStorage.setItem('adminNotice', text);
+            alert('নোটিশ সফলভাবে আপডেট হয়েছে!');
+        }
+
+        function updateNumber() {
+            let num = document.getElementById('num-input').value;
+            localStorage.setItem('adminDepositNumber', num);
+            alert('ডিপোজিট নাম্বার পরিবর্তন করা হয়েছে!');
+        }
+
+        function setPrediction() {
+            let email = document.getElementById('pred-email').value;
+            let mult = document.getElementById('pred-mult').value;
+            localStorage.setItem('nextCrash_' + email, mult);
+            alert('এই ইউজারের জন্য প্রেডিকশন সফলভাবে সেট করা হয়েছে!');
+        }
+
+        // ডিপোজিট টেবিল লোড করা ও অ্যাপ্রুভ/রিজেক্ট করা
+        let deposits = JSON.parse(localStorage.getItem('allDeposits') || '[]');
+        let tbody = document.getElementById('deposit-table-body');
+        let html = "";
+        
+        deposits.forEach((d, index) => {
+            html += `<tr>
+                <td>${d.email}</td>
+                <td>৳${d.amount}</td>
+                <td>${d.trx}</td>
+                <td><b>${d.status}</b></td>
+                <td>
+                    <button class="btn-app" onclick="approveDep(${index})">Approve</button>
+                    <button class="btn-rej" onclick="rejectDep(${index})">Reject</button>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html || '<tr><td colspan="5">কোনো রিকোয়েস্ট নেই</td></tr>';
+
+        function approveDep(index) {
+            let deposits = JSON.parse(localStorage.getItem('allDeposits'));
+            let d = deposits[index];
+            
+            // ইউজারের একাউন্টে অটো টাকা যোগ করা
+            let userData = JSON.parse(localStorage.getItem(d.email));
+            userData.balance = parseFloat(userData.balance) + parseFloat(d.amount);
+            localStorage.setItem(d.email, JSON.stringify(userData));
+
+            d.status = 'Success';
+            localStorage.setItem('allDeposits', JSON.stringify(deposits));
+            alert('ডিপোজিট অ্যাপ্রুভ করা হয়েছে এবং ইউজারের ব্যালেন্সে টাকা যোগ হয়েছে!');
+            location.reload();
+        }
+
+        function rejectDep(index) {
+            let reason = prompt("রিজেক্ট করার কারণ লিখুন:");
+            let deposits = JSON.parse(localStorage.getItem('allDeposits'));
+            deposits[index].status = 'Rejected';
+            deposits[index].reason = reason;
+            localStorage.setItem('allDeposits', JSON.stringify(deposits));
+            alert('ডিপোজিট রিজেক্ট করা হয়েছে!');
+            location.reload();
+        }
+    </script>
+</body>
+</html>
